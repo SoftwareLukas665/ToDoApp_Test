@@ -15,11 +15,13 @@ class MyApp extends StatelessWidget {
       // Update 2 mal schauen ob es jetzt klappt git du hurensohn
       // Junge ich kotze
       // Fun Fact: Diese Linie wurde auf Windows bearbeitet
+
+      // Windows
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Cookie Clicker'),
     );
   }
 }
