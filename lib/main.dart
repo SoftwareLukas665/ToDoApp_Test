@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       // Junge ich kotze
       // Fun Fact: Diese Linie wurde auf Windows bearbeitet
 
-      // AUtomatisch?
+      // Automatisch?
 
       title: 'Flutter Demo',
       theme: ThemeData(
