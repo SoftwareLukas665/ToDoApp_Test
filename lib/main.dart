@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       //Update: Hier ist ein neuer Text
-      // Update 2 mal schauen ob es jetzt klappt
+      // Update 2 mal schauen ob es jetzt klappt git du hurensohn
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
