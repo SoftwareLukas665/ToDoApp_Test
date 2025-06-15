@@ -16,7 +16,6 @@ class MyApp extends StatelessWidget {
       // Junge ich kotze
       // Fun Fact: Diese Linie wurde auf Windows bearbeitet
 
-      //Mac
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
