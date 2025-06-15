@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
       //Update: Hier ist ein neuer Text
       // Update 2 mal schauen ob es jetzt klappt git du hurensohn
       // Junge ich kotze
+      // Fun Fact: Diese Linie wurde auf Windows bearbeitet
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
