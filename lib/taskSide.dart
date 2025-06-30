@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:objectbox/objectbox.dart';
+import 'objectbox.g.dart';
 
 class taskSide extends StatefulWidget {
   const taskSide({super.key});
@@ -13,6 +15,8 @@ class _taskSideState extends State<taskSide> {
 
     //Alle Variablen der Klasse
     final double screenWidth = MediaQuery.sizeOf(context).width;
+
+    //Datenbank
 
     //User-Interface
     return Scaffold(
@@ -44,8 +48,6 @@ class _taskSideState extends State<taskSide> {
                         ),
                       ),
                     ),
-                    
-
 
                     Spacer(),
 
@@ -76,7 +78,6 @@ class _taskSideState extends State<taskSide> {
                   title: Text("Test" + index.toString())
                 );
               },
-
               ),
             ),
           ),
