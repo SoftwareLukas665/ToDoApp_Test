@@ -91,7 +91,22 @@ class _taskSideState extends State<taskSide> {
                           itemCount: fetchedTasks.length, itemBuilder: (context, index) {
                             final task = fetchedTasks[index];
                         return ListTile(
-                          title: Text(task.task), //Fehler: task ist nicht definiert
+                          title: Text(task.task),
+                          trailing: IconButton(onPressed: () {
+                            widget.database.deleteTask(task.id);
+                            setState(() {
+
+                            });
+                          }, icon: Icon(Icons.delete)),
+                          leading: Checkbox(value: task.done,
+                            onChanged: (value) {
+                              widget.database.updateTask(value!, task.id);
+                              setState(() {
+
+                              });
+
+                            },
+                          ),
                         );
                       });
                     } else {

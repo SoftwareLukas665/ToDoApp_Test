@@ -13,6 +13,9 @@ SELECT * FROM todolist WHERE id = ?;
 getDoneTasks:
 SELECT * FROM todolist WHERE done = true;
 
+updateTask:
+UPDATE todolist SET done = ? WHERE id = ?;
+
 getUndoneTasks:
 SELECT * FROM todolist WHERE done = false;
 

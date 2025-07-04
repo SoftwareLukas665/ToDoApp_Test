@@ -274,6 +274,15 @@ abstract class _$Database extends GeneratedDatabase {
     ).asyncMap(todolist.mapFromRow);
   }
 
+  Future<int> updateTask(bool var1, int var2) {
+    return customUpdate(
+      'UPDATE todolist SET done = ?1 WHERE id = ?2',
+      variables: [Variable<bool>(var1), Variable<int>(var2)],
+      updates: {todolist},
+      updateKind: UpdateKind.update,
+    );
+  }
+
   Selectable<TodolistData> getUndoneTasks() {
     return customSelect(
       'SELECT * FROM todolist WHERE done = FALSE',
