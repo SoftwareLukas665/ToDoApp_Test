@@ -4,12 +4,14 @@ CREATE TABLE todolist (
     done BOOLEAN NOT NULL DEFAULT FALSE,
 );
 
-getTasks:
+getAllTasks:
 SELECT * FROM todolist;
+
+getTask:
+SELECT * FROM todolist WHERE id = ?;
 
 getDoneTasks:
 SELECT * FROM todolist WHERE done = true;
-
 
 getUndoneTasks:
 SELECT * FROM todolist WHERE done = false;

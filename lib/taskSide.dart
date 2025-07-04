@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:test_windows_projekt/database.dart';
 
 class taskSide extends StatefulWidget {
-  const taskSide({super.key});
+  Database database = Database();
+
+  taskSide({super.key, required this.database});
 
   @override
   State<taskSide> createState() => _taskSideState();
@@ -10,9 +13,11 @@ class taskSide extends StatefulWidget {
 class _taskSideState extends State<taskSide> {
   @override
   Widget build(BuildContext context) {
+    TextEditingController textEditingController = TextEditingController();
 
     //Alle Variablen der Klasse
     final double screenWidth = MediaQuery.sizeOf(context).width;
+
 
     //Datenbank
 
@@ -44,6 +49,7 @@ class _taskSideState extends State<taskSide> {
                             hintText: "Aufgabe eingeben",
                             labelText: "Test"
                         ),
+                        controller: textEditingController,
                       ),
                     ),
 
@@ -53,7 +59,11 @@ class _taskSideState extends State<taskSide> {
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white),
                         onPressed: () {
-                          //Aktion eifügen
+                          print(textEditingController.text);
+                          widget.database.createTask(textEditingController.text, false);
+                          setState(() {
+
+                          });
                         }, child: Text("Bestätigen")
                     ),
 
@@ -69,13 +79,25 @@ class _taskSideState extends State<taskSide> {
             flex: 2,
             child: Container(
               width: screenWidth,
-              child: ListView.builder(itemCount: 20, itemBuilder: (context, index) {
-                //print(index.toString() + "x Objekt der Liste");
+              child: FutureBuilder(
+                  future: widget.database.getAllTasks().get(),
+                  builder: (context, snapshot) {
+                    if(!snapshot.hasData) {
+                      return Text("Keine Daten vorhanden");
+                    } else if (snapshot.hasData) {
+                      List fetchedTasks = snapshot.data!; //Das ist die Liste der Tasks
 
-                return ListTile(
-                  title: Text("Test" + index.toString())
-                );
-              },
+                      return ListView.builder(
+                          itemCount: fetchedTasks.length, itemBuilder: (context, index) {
+                            final task = fetchedTasks[index];
+                        return ListTile(
+                          title: Text(task.task), //Fehler: task ist nicht definiert
+                        );
+                      });
+                    } else {
+                      return Center(child: Text("Fehler!"),);
+                    }
+                  },
               ),
             ),
           ),

@@ -250,10 +250,18 @@ abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(e);
   $DatabaseManager get managers => $DatabaseManager(this);
   late final Todolist todolist = Todolist(this);
-  Selectable<TodolistData> getTasks() {
+  Selectable<TodolistData> getAllTasks() {
     return customSelect(
       'SELECT * FROM todolist',
       variables: [],
+      readsFrom: {todolist},
+    ).asyncMap(todolist.mapFromRow);
+  }
+
+  Selectable<TodolistData> getTask(int var1) {
+    return customSelect(
+      'SELECT * FROM todolist WHERE id = ?1',
+      variables: [Variable<int>(var1)],
       readsFrom: {todolist},
     ).asyncMap(todolist.mapFromRow);
   }
