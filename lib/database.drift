@@ -1,0 +1,21 @@
+CREATE TABLE todolist (
+    id INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+    task TEXT NOT NULL,
+    done BOOLEAN NOT NULL DEFAULT FALSE,
+);
+
+getTasks:
+SELECT * FROM todolist;
+
+getDoneTasks:
+SELECT * FROM todolist WHERE done = true;
+
+
+getUndoneTasks:
+SELECT * FROM todolist WHERE done = false;
+
+deleteTask:
+DELETE FROM todolist WHERE id= ?;
+
+createTask:
+INSERT INTO todolist (task, done) VALUES (?, ?);

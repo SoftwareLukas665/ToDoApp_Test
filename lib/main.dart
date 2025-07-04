@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/taskSide.dart';
+import 'database.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final db = Database();
+
+  runApp(MyApp(database: db));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Database database;
 
-  // This widget is the root of your application.
+  const MyApp({super.key, required this.database});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
