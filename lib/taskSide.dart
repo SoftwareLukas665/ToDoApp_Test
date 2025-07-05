@@ -67,7 +67,10 @@ class _taskSideState extends State<taskSide> {
                         }, child: Text("Bestätigen")
                     ),
 
-                    Spacer(flex: 1)
+                    Spacer(flex: 1),
+
+                    IconButton(onPressed: () {}, icon: Icon(Icons.tune)),
+
                   ],
                 )
               )
@@ -92,12 +95,25 @@ class _taskSideState extends State<taskSide> {
                             final task = fetchedTasks[index];
                         return ListTile(
                           title: Text(task.task),
-                          trailing: IconButton(onPressed: () {
-                            widget.database.deleteTask(task.id);
-                            setState(() {
+                          trailing: Wrap(
+                            spacing: 5,
+                            children: [
+                              IconButton(onPressed: () {
+                                //widget.database.deleteTask(task.id);
+                                print("Objekt bearbeitet");
+                                setState(() {
 
-                            });
-                          }, icon: Icon(Icons.delete)),
+                                });
+                              }, icon: Icon(Icons.edit)),
+
+                              IconButton(onPressed: () {
+                                widget.database.deleteTask(task.id);
+                                setState(() {
+
+                                });
+                              }, icon: Icon(Icons.delete)),
+                            ],
+                          ),
                           leading: Checkbox(value: task.done,
                             onChanged: (value) {
                               widget.database.updateTask(value!, task.id);
@@ -110,7 +126,7 @@ class _taskSideState extends State<taskSide> {
                         );
                       });
                     } else {
-                      return Center(child: Text("Fehler!"),);
+                      return Center(child: Text("Ein unbekannter Fehler ist aufgetreten!"),);
                     }
                   },
               ),

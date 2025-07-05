@@ -308,6 +308,38 @@ abstract class _$Database extends GeneratedDatabase {
     );
   }
 
+  Selectable<TodolistData> getDoneTrueFirst() {
+    return customSelect(
+      'SELECT * FROM todolist ORDER BY done ASC',
+      variables: [],
+      readsFrom: {todolist},
+    ).asyncMap(todolist.mapFromRow);
+  }
+
+  Selectable<TodolistData> getDoneFalseFirst() {
+    return customSelect(
+      'SELECT * FROM todolist ORDER BY done DESC',
+      variables: [],
+      readsFrom: {todolist},
+    ).asyncMap(todolist.mapFromRow);
+  }
+
+  Selectable<TodolistData> getOnlyDoneTrue() {
+    return customSelect(
+      'SELECT * FROM todolist WHERE done = TRUE',
+      variables: [],
+      readsFrom: {todolist},
+    ).asyncMap(todolist.mapFromRow);
+  }
+
+  Selectable<TodolistData> getOnlyDoneFalse() {
+    return customSelect(
+      'SELECT * FROM todolist WHERE done = FALSE',
+      variables: [],
+      readsFrom: {todolist},
+    ).asyncMap(todolist.mapFromRow);
+  }
+
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();

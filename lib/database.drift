@@ -24,3 +24,15 @@ DELETE FROM todolist WHERE id= ?;
 
 createTask:
 INSERT INTO todolist (task, done) VALUES (?, ?);
+
+getDoneTrueFirst:
+SELECT * FROM todolist ORDER BY done ASC;
+
+getDoneFalseFirst:
+SELECT * FROM todolist ORDER BY done DESC;
+
+getOnlyDoneTrue:
+SELECT * FROM todolist WHERE done = true;
+
+getOnlyDoneFalse:
+SELECT * FROM todolist WHERE done = false;
