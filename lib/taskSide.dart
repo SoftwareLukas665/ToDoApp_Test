@@ -69,7 +69,7 @@ class _taskSideState extends State<taskSide> {
 
                     Spacer(flex: 1),
 
-                    IconButton(onPressed: () {}, icon: Icon(Icons.tune)),
+
 
                   ],
                 )
@@ -82,54 +82,63 @@ class _taskSideState extends State<taskSide> {
             flex: 2,
             child: Container(
               width: screenWidth,
-              child: FutureBuilder(
-                  future: widget.database.getAllTasks().get(),
-                  builder: (context, snapshot) {
-                    if(!snapshot.hasData) {
-                      return Text("Keine Daten vorhanden");
-                    } else if (snapshot.hasData) {
-                      List fetchedTasks = snapshot.data!; //Das ist die Liste der Tasks
+              child: StreamBuilder(stream: widget.database.getAllTasks().watch() , builder: (context, snapshot) {
+                if(!snapshot.hasData) {
+                  return Text("Keine Daten vorhanden");
+                } else if (snapshot.hasData) {
+                  List fetchedTasks = snapshot.data!; //Das ist die Liste der Tasks
 
-                      return ListView.builder(
-                          itemCount: fetchedTasks.length, itemBuilder: (context, index) {
-                            final task = fetchedTasks[index];
-                        return ListTile(
-                          title: Text(task.task),
-                          trailing: Wrap(
-                            spacing: 5,
-                            children: [
-                              IconButton(onPressed: () {
-                                //widget.database.deleteTask(task.id);
-                                print("Objekt bearbeitet");
-                                setState(() {
+                  return Column(children: [
+                    PopupMenuButton(itemBuilder: (BuildContext context) => <PopupMenuEntry<IconButton>>[
+                      PopupMenuItem<IconButton>(value: IconButton., child: Text('Item 1')),
+                      PopupMenuItem<IconButton>(value: IconButton.itemTwo, child: Text('Item 2')),
+                      PopupMenuItem<IconButton>(value: IconButton.itemThree, child: Text('Item 3')),
+                    ],
 
-                                });
-                              }, icon: Icon(Icons.edit)),
+                    ),
+                    
+                    
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(onPressed: () {}, icon: Icon(Icons.filter_alt)),
+                        IconButton(onPressed: () {}, icon: Icon(Icons.sort)),
+                      ],
+                    ),
 
-                              IconButton(onPressed: () {
-                                widget.database.deleteTask(task.id);
-                                setState(() {
 
-                                });
-                              }, icon: Icon(Icons.delete)),
-                            ],
-                          ),
-                          leading: Checkbox(value: task.done,
-                            onChanged: (value) {
-                              widget.database.updateTask(value!, task.id);
-                              setState(() {
+                    ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: fetchedTasks.length, itemBuilder: (context, index) {
+                      final task = fetchedTasks[index];
+                      return ListTile(
+                        title: Text(task.task),
+                        trailing: Wrap(
+                          spacing: 5,
+                          children: [
+                            IconButton(onPressed: () {
+                              //widget.database.deleteTask(task.id);
+                              print("Objekt bearbeitet");
+                            }, icon: Icon(Icons.edit)),
 
-                              });
-
-                            },
-                          ),
-                        );
-                      });
-                    } else {
-                      return Center(child: Text("Ein unbekannter Fehler ist aufgetreten!"),);
-                    }
-                  },
-              ),
+                            IconButton(onPressed: () {
+                              widget.database.deleteTask(task.id);
+                            }, icon: Icon(Icons.delete)),
+                          ],
+                        ),
+                        leading: Checkbox(value: task.done,
+                          onChanged: (value) {
+                            widget.database.updateTask(value!, task.id);
+                          },
+                        ),
+                      );
+                    }),
+                    ],
+                  );
+                } else {
+                  return Center(child: Text("Ein unbekannter Fehler ist aufgetreten!"),);
+                }
+              },),
             ),
           ),
         ],
