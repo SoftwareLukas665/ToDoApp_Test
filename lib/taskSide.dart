@@ -89,13 +89,10 @@ class _taskSideState extends State<taskSide> {
                   List fetchedTasks = snapshot.data!; //Das ist die Liste der Tasks
 
                   return Column(children: [
-                    PopupMenuButton(itemBuilder: (BuildContext context) => <PopupMenuEntry<IconButton>>[
-                      PopupMenuItem<IconButton>(value: IconButton., child: Text('Item 1')),
-                      PopupMenuItem<IconButton>(value: IconButton.itemTwo, child: Text('Item 2')),
-                      PopupMenuItem<IconButton>(value: IconButton.itemThree, child: Text('Item 3')),
-                    ],
-
-                    ),
+                    PopupMenuButton(itemBuilder: (context) => <PopupMenuEntry<String>>[
+                      PopupMenuItem<String>(value: "Item1", child: Text("Item1", ),),
+                      PopupMenuItem<String>(value: "Item2", child: Text("Item2", ),),
+                      ],),
                     
                     
                     Row(
