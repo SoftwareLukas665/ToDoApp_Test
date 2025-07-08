@@ -18,9 +18,6 @@ class _taskSideState extends State<taskSide> {
     //Alle Variablen der Klasse
     final double screenWidth = MediaQuery.sizeOf(context).width;
 
-
-    //Datenbank
-
     //User-Interface
     return Scaffold(
       body: Column(
@@ -69,8 +66,6 @@ class _taskSideState extends State<taskSide> {
 
                     Spacer(flex: 1),
 
-
-
                   ],
                 )
               )
@@ -89,46 +84,49 @@ class _taskSideState extends State<taskSide> {
                   List fetchedTasks = snapshot.data!; //Das ist die Liste der Tasks
 
                   return Column(children: [
-                    PopupMenuButton(itemBuilder: (context) => <PopupMenuEntry<String>>[
-                      PopupMenuItem<String>(value: "Item1", child: Text("Item1", ),),
-                      PopupMenuItem<String>(value: "Item2", child: Text("Item2", ),),
-                      ],),
-                    
-                    
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(onPressed: () {}, icon: Icon(Icons.filter_alt)),
-                        IconButton(onPressed: () {}, icon: Icon(Icons.sort)),
+                    PopupMenuButton(child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Row(children: [Icon(Icons.filter_alt, color: Colors.white,), ],),
+                      padding: EdgeInsets.all(10),
+                    ),
+                      onSelected: (value) {
+                        String selectedItem = value;
+                        print(selectedItem);
+                      },
+                      itemBuilder: (context) => <PopupMenuEntry<String>>[
+                        PopupMenuItem<String>(value: "Erledigt", child: Row(children: [Text("Nur erledigte")],),),
+                        PopupMenuItem<String>(value: "Unerledigt", child: Row(children: [Text("Nur unerledigte")]),),
                       ],
                     ),
 
-
                     ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: fetchedTasks.length, itemBuilder: (context, index) {
-                      final task = fetchedTasks[index];
-                      return ListTile(
-                        title: Text(task.task),
-                        trailing: Wrap(
-                          spacing: 5,
-                          children: [
-                            IconButton(onPressed: () {
-                              //widget.database.deleteTask(task.id);
-                              print("Objekt bearbeitet");
-                            }, icon: Icon(Icons.edit)),
+                      shrinkWrap: true,
+                      itemCount: fetchedTasks.length, itemBuilder: (context, index) {
+                        final task = fetchedTasks[index];
+                        return ListTile(
+                          title: Text(task.task),
+                          trailing: Wrap(
+                            spacing: 5,
+                            children: [
+                              IconButton(onPressed: () {
+                                //widget.database.deleteTask(task.id);
+                                print("Objekt bearbeitet");
+                              }, icon: Icon(Icons.edit)),
 
-                            IconButton(onPressed: () {
-                              widget.database.deleteTask(task.id);
-                            }, icon: Icon(Icons.delete)),
-                          ],
-                        ),
-                        leading: Checkbox(value: task.done,
-                          onChanged: (value) {
-                            widget.database.updateTask(value!, task.id);
-                          },
-                        ),
-                      );
+                              IconButton(onPressed: () {
+                                widget.database.deleteTask(task.id);
+                              }, icon: Icon(Icons.delete)),
+                            ],
+                          ),
+                          leading: Checkbox(value: task.done,
+                            onChanged: (value) {
+                              widget.database.updateTask(value!, task.id);
+                            },
+                          ),
+                        );
                     }),
                     ],
                   );
