@@ -19,18 +19,24 @@ class _taskSideState extends State<taskSide> {
     late String item;
 
     //Überprüfung nach Filtereinstellungen des Nutzers
-    Stream<Object?>? checkSortAndFilterOption (String itemSelected) {
-      if (itemSelected == "Unerledigt"){
-        return widget.database.getOnlyDoneFalse().watch();
-      } else if (itemSelected == "Erledigt"){
-        return widget.database.getOnlyDoneTrue().watch();
+    Stream<Object?>? checkSortAndFilterOption (String? itemSelected) {
+      if (itemSelected != null){
+        if (itemSelected == "Unerledigt"){
+          return widget.database.getOnlyDoneFalse().watch();
+        } else if (itemSelected == "Erledigt"){
+          return widget.database.getOnlyDoneTrue().watch();
+        } else {
+          return widget.database.getAllTasks().watch();
+        }
       } else {
-        return widget.database.getAllTasks().watch();
+          return widget.database.getAllTasks().watch();
       }
+
     }
 
     void setSelectedItem (String filterinput){
       item = filterinput;
+      print(item + " aus Setter-Methode");
     }
 
 
@@ -100,7 +106,7 @@ class _taskSideState extends State<taskSide> {
             flex: 2,
             child: Container(
               width: screenWidth,
-              child: StreamBuilder(stream: checkSortAndFilterOption(getSelectedItem()) , builder: (context, snapshot) {
+              child: StreamBuilder(stream: checkSortAndFilterOption(null) , builder: (context, snapshot) {
                 if(!snapshot.hasData) {
                   return Text("Keine Daten vorhanden");
                 } else if (snapshot.hasData) {
@@ -118,6 +124,7 @@ class _taskSideState extends State<taskSide> {
                       onSelected: (value) {
                         String selectedItem = value;
                         setSelectedItem(value);
+                        checkSortAndFilterOption(value);
                         print(value);
                       },
                       itemBuilder: (context) => <PopupMenuEntry<String>>[
