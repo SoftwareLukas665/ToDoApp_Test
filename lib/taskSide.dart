@@ -22,13 +22,17 @@ class _taskSideState extends State<taskSide> {
     Stream<Object?>? checkSortAndFilterOption (String? itemSelected) {
       if (itemSelected != null){
         if (itemSelected == "Unerledigt"){
+          print("Hol nur unerledgite");
           return widget.database.getOnlyDoneFalse().watch();
         } else if (itemSelected == "Erledigt"){
+          print("Hol nur erledigte");
           return widget.database.getOnlyDoneTrue().watch();
         } else {
+          print("Hol alle Aufgaben aber Selektion nicht null");
           return widget.database.getAllTasks().watch();
         }
       } else {
+        print("Hol alle Aufgaben aber Selektion ist null");
           return widget.database.getAllTasks().watch();
       }
 
@@ -111,6 +115,7 @@ class _taskSideState extends State<taskSide> {
                   return Text("Keine Daten vorhanden");
                 } else if (snapshot.hasData) {
                   List fetchedTasks = snapshot.data! as List<dynamic>; //Das ist die Liste der Tasks
+                  print(fetchedTasks);
 
                   return Column(children: [
                     PopupMenuButton(child: Container(
