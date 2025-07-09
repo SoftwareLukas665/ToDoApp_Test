@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
 
+
+
 class taskSide extends StatefulWidget {
   Database database = Database();
 
@@ -10,9 +12,33 @@ class taskSide extends StatefulWidget {
   State<taskSide> createState() => _taskSideState();
 }
 
+
 class _taskSideState extends State<taskSide> {
   @override
   Widget build(BuildContext context) {
+    late String item;
+
+    //Überprüfung nach Filtereinstellungen des Nutzers
+    Stream<Object?>? checkSortAndFilterOption (String itemSelected) {
+      if (itemSelected == "Unerledigt"){
+        return widget.database.getOnlyDoneFalse().watch();
+      } else if (itemSelected == "Erledigt"){
+        return widget.database.getOnlyDoneTrue().watch();
+      } else {
+        return widget.database.getAllTasks().watch();
+      }
+    }
+
+    void setSelectedItem (String filterinput){
+      item = filterinput;
+    }
+
+
+
+
+
+
+
     TextEditingController textEditingController = TextEditingController();
 
     //Alle Variablen der Klasse
@@ -29,7 +55,7 @@ class _taskSideState extends State<taskSide> {
                 fontSize: 32,
                 fontWeight: FontWeight.w700
               ),
-            ), centerTitle: false, //backgroundColor: Colors.grey[250],
+            ), centerTitle: false,
           ),
           
           Expanded(
@@ -58,9 +84,6 @@ class _taskSideState extends State<taskSide> {
                         onPressed: () {
                           print(textEditingController.text);
                           widget.database.createTask(textEditingController.text, false);
-                          setState(() {
-
-                          });
                         }, child: Text("Bestätigen")
                     ),
 
@@ -77,11 +100,11 @@ class _taskSideState extends State<taskSide> {
             flex: 2,
             child: Container(
               width: screenWidth,
-              child: StreamBuilder(stream: widget.database.getAllTasks().watch() , builder: (context, snapshot) {
+              child: StreamBuilder(stream: checkSortAndFilterOption(getSelectedItem()) , builder: (context, snapshot) {
                 if(!snapshot.hasData) {
                   return Text("Keine Daten vorhanden");
                 } else if (snapshot.hasData) {
-                  List fetchedTasks = snapshot.data!; //Das ist die Liste der Tasks
+                  List fetchedTasks = snapshot.data! as List<dynamic>; //Das ist die Liste der Tasks
 
                   return Column(children: [
                     PopupMenuButton(child: Container(
@@ -89,12 +112,13 @@ class _taskSideState extends State<taskSide> {
                         color: Colors.black,
                         shape: BoxShape.circle,
                       ),
-                      child: Row(children: [Icon(Icons.filter_alt, color: Colors.white,), ],),
                       padding: EdgeInsets.all(10),
+                      child: Icon(Icons.filter_alt, color: Colors.white),
                     ),
                       onSelected: (value) {
                         String selectedItem = value;
-                        print(selectedItem);
+                        setSelectedItem(value);
+                        print(value);
                       },
                       itemBuilder: (context) => <PopupMenuEntry<String>>[
                         PopupMenuItem<String>(value: "Erledigt", child: Row(children: [Text("Nur erledigte")],),),
