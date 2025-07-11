@@ -15,38 +15,42 @@ class taskSide extends StatefulWidget {
 
 class _taskSideState extends State<taskSide> {
   @override
+
+  String item = "";
+
   Widget build(BuildContext context) {
-    late String item;
+
 
     //Überprüfung nach Filtereinstellungen des Nutzers
     Stream<Object?>? checkSortAndFilterOption (String? itemSelected) {
+      //print("checkandsort-Funktion mit item-Wert = '" + item + "'");
       if (itemSelected != null){
         if (itemSelected == "Unerledigt"){
-          print("Hol nur unerledgite");
+          //print("Hol nur unerledigte");
           return widget.database.getOnlyDoneFalse().watch();
         } else if (itemSelected == "Erledigt"){
-          print("Hol nur erledigte");
+          //print("Hol nur erledigte");
           return widget.database.getOnlyDoneTrue().watch();
-        } else {
-          print("Hol alle Aufgaben aber Selektion nicht null");
+        } else if (itemSelected == "ErledigtZuerst"){
+          return widget.database.getDoneTrueFirst().watch();
+        } else if (itemSelected == "UnerledigtZuerst"){
+          return widget.database.getDoneFalseFirst().watch();
+        } else if (itemSelected == ""){
+          //print("Hol alle Aufgaben aber Selektion nicht null");
           return widget.database.getAllTasks().watch();
         }
       } else {
-        print("Hol alle Aufgaben aber Selektion ist null");
+        //print("Hol alle Aufgaben aber Selektion ist null");
           return widget.database.getAllTasks().watch();
       }
 
     }
 
-    void setSelectedItem (String filterinput){
-      item = filterinput;
-      print(item + " aus Setter-Methode");
+    String getSelectedItem (){
+      //print("getSelectedItem ausgeführt");
+      //print("getSelectedItem mit itemwert = '" + item + "' ausgeführt");
+      return item;
     }
-
-
-
-
-
 
 
     TextEditingController textEditingController = TextEditingController();
@@ -76,7 +80,7 @@ class _taskSideState extends State<taskSide> {
                     Spacer(flex: 2),
 
                     Padding(
-                        padding: EdgeInsetsGeometry.symmetric(horizontal: screenWidth*0.04),
+                      padding: EdgeInsetsGeometry.symmetric(horizontal: screenWidth*0.04),
                       child: TextField(decoration:
                         InputDecoration(
                             hintText: "Aufgabe eingeben",
@@ -110,31 +114,53 @@ class _taskSideState extends State<taskSide> {
             flex: 2,
             child: Container(
               width: screenWidth,
-              child: StreamBuilder(stream: checkSortAndFilterOption(null) , builder: (context, snapshot) {
+              child: StreamBuilder(stream: checkSortAndFilterOption(getSelectedItem()) , builder: (context, snapshot) {
                 if(!snapshot.hasData) {
                   return Text("Keine Daten vorhanden");
                 } else if (snapshot.hasData) {
                   List fetchedTasks = snapshot.data! as List<dynamic>; //Das ist die Liste der Tasks
-                  print(fetchedTasks);
+                  //print(fetchedTasks);
 
                   return Column(children: [
-                    PopupMenuButton(child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        shape: BoxShape.circle,
+                    PopupMenuButton(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          shape: BoxShape.circle,
+                        ),
+                        padding: EdgeInsets.all(10),
+                        child: Icon(Icons.filter_alt, color: Colors.white),
                       ),
-                      padding: EdgeInsets.all(10),
-                      child: Icon(Icons.filter_alt, color: Colors.white),
-                    ),
                       onSelected: (value) {
-                        String selectedItem = value;
-                        setSelectedItem(value);
-                        checkSortAndFilterOption(value);
-                        print(value);
+                        setState(() {
+                        //print("item-Wert = '" + item + "' und Value-Wert = '" + value + "'");
+                        item = value;
+                        //print("item-Wert = '" + item + "' und Value-Wert = '" + value + "'");
+                        checkSortAndFilterOption(item);
+                        
+                        });
                       },
                       itemBuilder: (context) => <PopupMenuEntry<String>>[
                         PopupMenuItem<String>(value: "Erledigt", child: Row(children: [Text("Nur erledigte")],),),
                         PopupMenuItem<String>(value: "Unerledigt", child: Row(children: [Text("Nur unerledigte")]),),
+                        PopupMenuItem<String>(child: Row(children: [
+                          PopupMenuButton(
+                            onSelected: (value) {
+                              setState(() {
+                                //print("item-Wert = '" + item + "' und Value-Wert = '" + value + "'");
+                                item = value;
+                                //print("item-Wert = '" + item + "' und Value-Wert = '" + value + "'");
+                                checkSortAndFilterOption(item);
+
+                              });
+                            },
+                            child: Text("Sortieren nach"),
+                            itemBuilder: (context) => <PopupMenuEntry<String>>[
+                              PopupMenuItem<String>(value: "ErledigtZuerst", child: Row(children: [Text("Erledigte zuerst")]),),
+                              PopupMenuItem<String>(value: "UnerledigtZuerst", child: Row(children: [Text("Unerledigte zuerst")]),),
+                            ],
+                          ),
+                        ],),),
                       ],
                     ),
 
@@ -148,8 +174,46 @@ class _taskSideState extends State<taskSide> {
                             spacing: 5,
                             children: [
                               IconButton(onPressed: () {
-                                //widget.database.deleteTask(task.id);
+                                //widget.database.deleteTask(task.id);,
+
                                 print("Objekt bearbeitet");
+                                
+                                showDialog(
+                                  context: context,
+                                  builder:  (BuildContext context) {
+                                    return AlertDialog(
+                                      actions: [
+
+                                      ],
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text("Aufgabe bearbeiten"),
+
+                                          TextField(decoration:
+                                          InputDecoration(
+                                              hintText: "Aufgabe eingeben",
+                                              labelText: "Test"
+                                          ),
+                                            //controller: textEditingController,
+                                          ),
+
+                                          ElevatedButton(style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.black,
+                                              foregroundColor: Colors.white),
+                                              onPressed: () {
+                                                print(textEditingController.text);
+                                                //widget.database.createTask(textEditingController.text, false);
+                                              }, child: Text("Änderungen bestätigen")
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                                
+                                
+
                               }, icon: Icon(Icons.edit)),
 
                               IconButton(onPressed: () {

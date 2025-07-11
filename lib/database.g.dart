@@ -310,7 +310,7 @@ abstract class _$Database extends GeneratedDatabase {
 
   Selectable<TodolistData> getDoneTrueFirst() {
     return customSelect(
-      'SELECT * FROM todolist ORDER BY done ASC',
+      'SELECT * FROM todolist ORDER BY done DESC',
       variables: [],
       readsFrom: {todolist},
     ).asyncMap(todolist.mapFromRow);
@@ -318,7 +318,7 @@ abstract class _$Database extends GeneratedDatabase {
 
   Selectable<TodolistData> getDoneFalseFirst() {
     return customSelect(
-      'SELECT * FROM todolist ORDER BY done DESC',
+      'SELECT * FROM todolist ORDER BY done ASC',
       variables: [],
       readsFrom: {todolist},
     ).asyncMap(todolist.mapFromRow);

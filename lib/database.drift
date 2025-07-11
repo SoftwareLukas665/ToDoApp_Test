@@ -26,10 +26,10 @@ createTask:
 INSERT INTO todolist (task, done) VALUES (?, ?);
 
 getDoneTrueFirst:
-SELECT * FROM todolist ORDER BY done ASC;
+SELECT * FROM todolist ORDER BY done DESC;
 
 getDoneFalseFirst:
-SELECT * FROM todolist ORDER BY done DESC;
+SELECT * FROM todolist ORDER BY done ASC;
 
 getOnlyDoneTrue:
 SELECT * FROM todolist WHERE done = true;
