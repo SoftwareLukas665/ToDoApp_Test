@@ -1,3 +1,4 @@
+import 'package:drift/src/runtime/query_builder/query_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
 
@@ -19,6 +20,9 @@ class _taskSideState extends State<taskSide> {
   String item = "";
 
   Widget build(BuildContext context) {
+
+    TextEditingController textEditingController = TextEditingController();
+    TextEditingController EditTaskController = TextEditingController();
 
 
     //Überprüfung nach Filtereinstellungen des Nutzers
@@ -52,9 +56,6 @@ class _taskSideState extends State<taskSide> {
       return item;
     }
 
-
-    TextEditingController textEditingController = TextEditingController();
-
     //Alle Variablen der Klasse
     final double screenWidth = MediaQuery.sizeOf(context).width;
 
@@ -69,7 +70,8 @@ class _taskSideState extends State<taskSide> {
                 fontSize: 32,
                 fontWeight: FontWeight.w700
               ),
-            ), centerTitle: false,
+            ),
+            centerTitle: false,
           ),
           
           Expanded(
@@ -84,7 +86,6 @@ class _taskSideState extends State<taskSide> {
                       child: TextField(decoration:
                         InputDecoration(
                             hintText: "Aufgabe eingeben",
-                            labelText: "Test"
                         ),
                         controller: textEditingController,
                       ),
@@ -98,6 +99,7 @@ class _taskSideState extends State<taskSide> {
                         onPressed: () {
                           print(textEditingController.text);
                           widget.database.createTask(textEditingController.text, false);
+                          textEditingController.clear();
                         }, child: Text("Bestätigen")
                     ),
 
@@ -174,17 +176,13 @@ class _taskSideState extends State<taskSide> {
                             spacing: 5,
                             children: [
                               IconButton(onPressed: () {
-                                //widget.database.deleteTask(task.id);,
-
-                                print("Objekt bearbeitet");
-                                
                                 showDialog(
                                   context: context,
                                   builder:  (BuildContext context) {
-                                    return AlertDialog(
-                                      actions: [
 
-                                      ],
+                                    EditTaskController.text = task.task;
+
+                                    return AlertDialog(
                                       content: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
@@ -192,18 +190,18 @@ class _taskSideState extends State<taskSide> {
 
                                           TextField(decoration:
                                           InputDecoration(
-                                              hintText: "Aufgabe eingeben",
-                                              labelText: "Test"
+                                            hintText: task.task,
                                           ),
-                                            //controller: textEditingController,
+                                            controller: EditTaskController,
                                           ),
 
                                           ElevatedButton(style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.black,
                                               foregroundColor: Colors.white),
                                               onPressed: () {
-                                                print(textEditingController.text);
-                                                //widget.database.createTask(textEditingController.text, false);
+                                                widget.database.changeTask(EditTaskController.text, task.id);
+                                                Navigator.of(context).pop();
+                                                EditTaskController.clear();
                                               }, child: Text("Änderungen bestätigen")
                                           ),
                                         ],

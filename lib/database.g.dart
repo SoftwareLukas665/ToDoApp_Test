@@ -250,6 +250,23 @@ abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(e);
   $DatabaseManager get managers => $DatabaseManager(this);
   late final Todolist todolist = Todolist(this);
+  Future<int> changeTask(String var1, int var2) {
+    return customUpdate(
+      'UPDATE todolist SET task = ?1 WHERE id = ?2',
+      variables: [Variable<String>(var1), Variable<int>(var2)],
+      updates: {todolist},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Selectable<String> getTaskName(int var1) {
+    return customSelect(
+      'SELECT task FROM todolist WHERE id = ?1',
+      variables: [Variable<int>(var1)],
+      readsFrom: {todolist},
+    ).map((QueryRow row) => row.read<String>('task'));
+  }
+
   Selectable<TodolistData> getAllTasks() {
     return customSelect(
       'SELECT * FROM todolist',

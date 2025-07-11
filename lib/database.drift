@@ -4,6 +4,12 @@ CREATE TABLE todolist (
     done BOOLEAN NOT NULL DEFAULT FALSE,
 );
 
+changeTask:
+UPDATE todolist SET task = ? WHERE id = ?;
+
+getTaskName:
+SELECT task FROM todolist WHERE id = ?;
+
 getAllTasks:
 SELECT * FROM todolist;
 
