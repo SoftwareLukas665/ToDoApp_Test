@@ -27,32 +27,21 @@ class _taskSideState extends State<taskSide> {
 
     //Überprüfung nach Filtereinstellungen des Nutzers
     Stream<Object?>? checkSortAndFilterOption (String? itemSelected) {
-      //print("checkandsort-Funktion mit item-Wert = '" + item + "'");
-      if (itemSelected != null){
-        if (itemSelected == "Unerledigt"){
-          //print("Hol nur unerledigte");
-          return widget.database.getOnlyDoneFalse().watch();
-        } else if (itemSelected == "Erledigt"){
-          //print("Hol nur erledigte");
-          return widget.database.getOnlyDoneTrue().watch();
-        } else if (itemSelected == "ErledigtZuerst"){
-          return widget.database.getDoneTrueFirst().watch();
-        } else if (itemSelected == "UnerledigtZuerst"){
-          return widget.database.getDoneFalseFirst().watch();
-        } else if (itemSelected == ""){
-          //print("Hol alle Aufgaben aber Selektion nicht null");
-          return widget.database.getAllTasks().watch();
-        }
+      if (itemSelected == "Unerledigt") {
+        return widget.database.getOnlyDoneFalse().watch();
+      } else if (itemSelected == "Erledigt") {
+        return widget.database.getOnlyDoneTrue().watch();
+      } else if (itemSelected == "ErledigtZuerst") {
+        return widget.database.getDoneTrueFirst().watch();
+      } else if (itemSelected == "UnerledigtZuerst") {
+        return widget.database.getDoneFalseFirst().watch();
       } else {
-        //print("Hol alle Aufgaben aber Selektion ist null");
-          return widget.database.getAllTasks().watch();
+        return widget.database.getAllTasks().watch();
       }
-
     }
 
+
     String getSelectedItem (){
-      //print("getSelectedItem ausgeführt");
-      //print("getSelectedItem mit itemwert = '" + item + "' ausgeführt");
       return item;
     }
 
@@ -135,9 +124,7 @@ class _taskSideState extends State<taskSide> {
                       ),
                       onSelected: (value) {
                         setState(() {
-                        //print("item-Wert = '" + item + "' und Value-Wert = '" + value + "'");
                         item = value;
-                        //print("item-Wert = '" + item + "' und Value-Wert = '" + value + "'");
                         checkSortAndFilterOption(item);
                         
                         });
@@ -149,11 +136,8 @@ class _taskSideState extends State<taskSide> {
                           PopupMenuButton(
                             onSelected: (value) {
                               setState(() {
-                                //print("item-Wert = '" + item + "' und Value-Wert = '" + value + "'");
                                 item = value;
-                                //print("item-Wert = '" + item + "' und Value-Wert = '" + value + "'");
                                 checkSortAndFilterOption(item);
-
                               });
                             },
                             child: Text("Sortieren nach"),
@@ -209,9 +193,6 @@ class _taskSideState extends State<taskSide> {
                                     );
                                   },
                                 );
-                                
-                                
-
                               }, icon: Icon(Icons.edit)),
 
                               IconButton(onPressed: () {
