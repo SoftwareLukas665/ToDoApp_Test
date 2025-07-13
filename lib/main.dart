@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_windows_projekt/listSide.dart';
 import 'package:test_windows_projekt/taskSide.dart';
 import 'database.dart';
 
@@ -22,7 +23,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: taskSide(database: database),
+      home: listSide(database: database),
+      routes: {
+        '/taskSide' : (context) => taskSide(database: database),
+        '/listSide': (context) => listSide(database: database),
+      },
     );
   }
 }

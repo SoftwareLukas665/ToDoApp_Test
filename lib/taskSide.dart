@@ -1,4 +1,3 @@
-import 'package:drift/src/runtime/query_builder/query_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
 
@@ -150,63 +149,67 @@ class _taskSideState extends State<taskSide> {
                       ],
                     ),
 
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: fetchedTasks.length, itemBuilder: (context, index) {
-                        final task = fetchedTasks[index];
-                        return ListTile(
-                          title: Text(task.task),
-                          trailing: Wrap(
-                            spacing: 5,
-                            children: [
-                              IconButton(onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder:  (BuildContext context) {
+                    Expanded(
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: fetchedTasks.length, itemBuilder: (context, index) {
+                          final task = fetchedTasks[index];
+                          return ListTile(
+                            title: Text(task.task),
+                            trailing: Wrap(
+                              spacing: 5,
+                              children: [
+                                IconButton(onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder:  (BuildContext context) {
 
-                                    EditTaskController.text = task.task;
+                                      EditTaskController.text = task.task;
 
-                                    return AlertDialog(
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text("Aufgabe bearbeiten"),
+                                      return AlertDialog(
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text("Aufgabe bearbeiten"),
 
-                                          TextField(decoration:
-                                          InputDecoration(
-                                            hintText: task.task,
-                                          ),
-                                            controller: EditTaskController,
-                                          ),
+                                            TextField(decoration:
+                                            InputDecoration(
+                                              hintText: task.task,
+                                            ),
+                                              controller: EditTaskController,
+                                            ),
 
-                                          ElevatedButton(style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.black,
-                                              foregroundColor: Colors.white),
-                                              onPressed: () {
-                                                widget.database.changeTask(EditTaskController.text, task.id);
-                                                Navigator.of(context).pop();
-                                                EditTaskController.clear();
-                                              }, child: Text("Änderungen bestätigen")
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              }, icon: Icon(Icons.edit)),
+                                            ElevatedButton(style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.black,
+                                                foregroundColor: Colors.white),
+                                                onPressed: () {
+                                                  widget.database.changeTask(EditTaskController.text, task.id);
+                                                  Navigator.of(context).pop();
+                                                  EditTaskController.clear();
+                                                }, child: Text("Änderungen bestätigen")
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }, icon: Icon(Icons.edit)),
 
-                              IconButton(onPressed: () {
-                                widget.database.deleteTask(task.id);
-                              }, icon: Icon(Icons.delete)),
-                            ],
-                          ),
-                          leading: Checkbox(value: task.done,
-                            onChanged: (value) {
-                              widget.database.updateTask(value!, task.id);
-                            },
-                          ),
-                        );
-                    }),
+                                IconButton(onPressed: () {
+                                  widget.database.deleteTask(task.id);
+                                }, icon: Icon(Icons.delete)),
+                              ],
+                            ),
+                            leading: Checkbox(value: task.done,
+                              onChanged: (value) {
+                                widget.database.updateTask(value!, task.id);
+                              },
+                            ),
+                          );
+                        }),
+                    )
+
+
                     ],
                   );
                 } else {

@@ -1,44 +1,54 @@
-CREATE TABLE todolist (
+CREATE TABLE tasks (
     id INT NOT NULL PRIMARY KEY AUTOINCREMENT,
     task TEXT NOT NULL,
     done BOOLEAN NOT NULL DEFAULT FALSE,
+
 );
 
 changeTask:
-UPDATE todolist SET task = ? WHERE id = ?;
+UPDATE tasks SET task = ? WHERE id = ?;
 
 getTaskName:
-SELECT task FROM todolist WHERE id = ?;
+SELECT task FROM tasks WHERE id = ?;
 
 getAllTasks:
-SELECT * FROM todolist;
+SELECT * FROM tasks;
 
 getTask:
-SELECT * FROM todolist WHERE id = ?;
+SELECT * FROM tasks WHERE id = ?;
 
 getDoneTasks:
-SELECT * FROM todolist WHERE done = true;
+SELECT * FROM tasks WHERE done = true;
 
 updateTask:
-UPDATE todolist SET done = ? WHERE id = ?;
+UPDATE tasks SET done = ? WHERE id = ?;
 
 getUndoneTasks:
-SELECT * FROM todolist WHERE done = false;
+SELECT * FROM tasks WHERE done = false;
 
 deleteTask:
-DELETE FROM todolist WHERE id= ?;
+DELETE FROM tasks WHERE id= ?;
 
 createTask:
-INSERT INTO todolist (task, done) VALUES (?, ?);
+INSERT INTO tasks (task, done) VALUES (?, ?);
 
 getDoneTrueFirst:
-SELECT * FROM todolist ORDER BY done DESC;
+SELECT * FROM tasks ORDER BY done DESC;
 
 getDoneFalseFirst:
-SELECT * FROM todolist ORDER BY done ASC;
+SELECT * FROM tasks ORDER BY done ASC;
 
 getOnlyDoneTrue:
-SELECT * FROM todolist WHERE done = true;
+SELECT * FROM tasks WHERE done = true;
 
 getOnlyDoneFalse:
-SELECT * FROM todolist WHERE done = false;
+SELECT * FROM tasks WHERE done = false;
+
+
+CREATE TABLE todolist (
+    id INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+);
+
+getAllLists:
+SELECT * FROM todolist
