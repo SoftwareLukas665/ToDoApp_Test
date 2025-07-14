@@ -8,6 +8,7 @@ void main() async {
   final db = Database();
 
   runApp(MyApp(database: db));
+
 }
 
 class MyApp extends StatelessWidget {
@@ -24,10 +25,6 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: listSide(database: database),
-      routes: {
-        '/taskSide' : (context) => taskSide(database: database),
-        '/listSide': (context) => listSide(database: database),
-      },
     );
   }
 }

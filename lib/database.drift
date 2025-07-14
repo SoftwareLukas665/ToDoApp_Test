@@ -2,7 +2,7 @@ CREATE TABLE tasks (
     id INT NOT NULL PRIMARY KEY AUTOINCREMENT,
     task TEXT NOT NULL,
     done BOOLEAN NOT NULL DEFAULT FALSE,
-
+    list_id INT NOT NULL REFERENCES todolist(id),
 );
 
 changeTask:
@@ -12,7 +12,7 @@ getTaskName:
 SELECT task FROM tasks WHERE id = ?;
 
 getAllTasks:
-SELECT * FROM tasks;
+SELECT * FROM tasks WHERE list_id = ?;
 
 getTask:
 SELECT * FROM tasks WHERE id = ?;
@@ -30,7 +30,7 @@ deleteTask:
 DELETE FROM tasks WHERE id= ?;
 
 createTask:
-INSERT INTO tasks (task, done) VALUES (?, ?);
+INSERT INTO tasks (task, done, list_id) VALUES (?, ?, ?);
 
 getDoneTrueFirst:
 SELECT * FROM tasks ORDER BY done DESC;
@@ -49,6 +49,9 @@ CREATE TABLE todolist (
     id INT NOT NULL PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
 );
+
+createList:
+INSERT INTO todolist (name) VALUES (?);
 
 getAllLists:
 SELECT * FROM todolist

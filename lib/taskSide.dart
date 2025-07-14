@@ -4,9 +4,10 @@ import 'package:test_windows_projekt/database.dart';
 
 
 class taskSide extends StatefulWidget {
-  Database database = Database();
+  final Database database;
+  final int list_id;
 
-  taskSide({super.key, required this.database});
+  taskSide({super.key, required this.database, required this.list_id});
 
   @override
   State<taskSide> createState() => _taskSideState();
@@ -35,7 +36,7 @@ class _taskSideState extends State<taskSide> {
       } else if (itemSelected == "UnerledigtZuerst") {
         return widget.database.getDoneFalseFirst().watch();
       } else {
-        return widget.database.getAllTasks().watch();
+        return widget.database.getAllTasks(widget.list_id).watch();
       }
     }
 
@@ -85,8 +86,7 @@ class _taskSideState extends State<taskSide> {
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white),
                         onPressed: () {
-                          print(textEditingController.text);
-                          widget.database.createTask(textEditingController.text, false);
+                          widget.database.createTask(textEditingController.text, false, widget.list_id);
                           textEditingController.clear();
                         }, child: Text("Bestätigen")
                     ),
@@ -109,7 +109,6 @@ class _taskSideState extends State<taskSide> {
                   return Text("Keine Daten vorhanden");
                 } else if (snapshot.hasData) {
                   List fetchedTasks = snapshot.data! as List<dynamic>; //Das ist die Liste der Tasks
-                  //print(fetchedTasks);
 
                   return Column(children: [
                     PopupMenuButton(
@@ -152,7 +151,8 @@ class _taskSideState extends State<taskSide> {
                     Expanded(
                         child: ListView.builder(
                             shrinkWrap: true,
-                            itemCount: fetchedTasks.length, itemBuilder: (context, index) {
+                            itemCount: fetchedTasks.length,
+                            itemBuilder: (context, index) {
                           final task = fetchedTasks[index];
                           return ListTile(
                             title: Text(task.task),
