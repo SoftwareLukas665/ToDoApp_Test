@@ -42,10 +42,11 @@ class _listSideState extends State<listSide> {
                   stream: widget.database.getAllLists().watch(),
                   builder: (context, snapshot){
                     if(!snapshot.hasData) {
+                      print("Fehler oder keine vorhandenen Daten bei der Anfrage");
                       return Text("Keine Daten vorhanden");
                     } else if (snapshot.hasData) {
                       List fetchedLists = snapshot.data! as List<dynamic>; //Das ist die Liste der Tasks
-                      //print(fetchedTasks);
+                      print(fetchedLists);
 
                       return ListView.separated(
 

@@ -3,55 +3,64 @@ CREATE TABLE tasks (
     task TEXT NOT NULL,
     done BOOLEAN NOT NULL DEFAULT FALSE,
     list_id INT NOT NULL REFERENCES todolist(id),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 changeTask:
-UPDATE tasks SET task = ? WHERE id = ?;
+UPDATE tasks SET task = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?;
 
 getTaskName:
-SELECT task FROM tasks WHERE id = ?;
+SELECT task FROM tasks WHERE id = ? AND deleted = false;
 
 getAllTasks:
-SELECT * FROM tasks WHERE list_id = ?;
+SELECT * FROM tasks WHERE list_id = ? AND deleted = false;
 
 getTask:
-SELECT * FROM tasks WHERE id = ?;
+SELECT * FROM tasks WHERE id = ? AND deleted = false;
 
 getDoneTasks:
-SELECT * FROM tasks WHERE done = true;
+SELECT * FROM tasks WHERE done = true AND deleted = false;
 
 updateTask:
-UPDATE tasks SET done = ? WHERE id = ?;
+UPDATE tasks SET done = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?;
 
 getUndoneTasks:
-SELECT * FROM tasks WHERE done = false;
+SELECT * FROM tasks WHERE done = false AND deleted = false;
 
-deleteTask:
-DELETE FROM tasks WHERE id= ?;
+softDeleteTask:
+UPDATE tasks SET deleted = true AND updated_at = CURRENT_TIMESTAMP WHERE id = ?;
+
+HardDeleteTask:
+DELETE FROM tasks WHERE id = ?;
 
 createTask:
 INSERT INTO tasks (task, done, list_id) VALUES (?, ?, ?);
 
 getDoneTrueFirst:
-SELECT * FROM tasks ORDER BY done DESC;
+SELECT * FROM tasks WHERE deleted = false ORDER BY done DESC;
 
 getDoneFalseFirst:
-SELECT * FROM tasks ORDER BY done ASC;
+SELECT * FROM tasks WHERE deleted = false ORDER BY done ASC;
 
 getOnlyDoneTrue:
-SELECT * FROM tasks WHERE done = true;
+SELECT * FROM tasks WHERE done = true AND deleted = false;
 
 getOnlyDoneFalse:
-SELECT * FROM tasks WHERE done = false;
+SELECT * FROM tasks WHERE done = false AND deleted = false;
 
 
 CREATE TABLE todolist (
     id INT NOT NULL PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 createList:
-INSERT INTO todolist (name) VALUES (?);
+INSERT INTO todolist (name, created_at, updated_at) VALUES (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 getAllLists:
-SELECT * FROM todolist
+SELECT * FROM todolist WHERE deleted = false;

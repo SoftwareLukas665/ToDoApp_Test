@@ -27,8 +27,50 @@ class Todolist extends Table with TableInfo<Todolist, TodolistData> {
     requiredDuringInsert: true,
     $customConstraints: 'NOT NULL',
   );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  late final GeneratedColumn<double> createdAt = GeneratedColumn<double>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+    defaultValue: const CustomExpression('CURRENT_TIMESTAMP'),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  late final GeneratedColumn<double> updatedAt = GeneratedColumn<double>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+    defaultValue: const CustomExpression('CURRENT_TIMESTAMP'),
+  );
+  static const VerificationMeta _deletedMeta = const VerificationMeta(
+    'deleted',
+  );
+  late final GeneratedColumn<bool> deleted = GeneratedColumn<bool>(
+    'deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    $customConstraints: 'NOT NULL DEFAULT FALSE',
+    defaultValue: const CustomExpression('FALSE'),
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, name];
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    createdAt,
+    updatedAt,
+    deleted,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -52,6 +94,24 @@ class Todolist extends Table with TableInfo<Todolist, TodolistData> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('deleted')) {
+      context.handle(
+        _deletedMeta,
+        deleted.isAcceptableOrUnknown(data['deleted']!, _deletedMeta),
+      );
+    }
     return context;
   }
 
@@ -69,6 +129,18 @@ class Todolist extends Table with TableInfo<Todolist, TodolistData> {
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}deleted'],
+      )!,
     );
   }
 
@@ -84,17 +156,35 @@ class Todolist extends Table with TableInfo<Todolist, TodolistData> {
 class TodolistData extends DataClass implements Insertable<TodolistData> {
   final int id;
   final String name;
-  const TodolistData({required this.id, required this.name});
+  final double createdAt;
+  final double updatedAt;
+  final bool deleted;
+  const TodolistData({
+    required this.id,
+    required this.name,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.deleted,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
+    map['created_at'] = Variable<double>(createdAt);
+    map['updated_at'] = Variable<double>(updatedAt);
+    map['deleted'] = Variable<bool>(deleted);
     return map;
   }
 
   TodolistCompanion toCompanion(bool nullToAbsent) {
-    return TodolistCompanion(id: Value(id), name: Value(name));
+    return TodolistCompanion(
+      id: Value(id),
+      name: Value(name),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deleted: Value(deleted),
+    );
   }
 
   factory TodolistData.fromJson(
@@ -105,6 +195,9 @@ class TodolistData extends DataClass implements Insertable<TodolistData> {
     return TodolistData(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      createdAt: serializer.fromJson<double>(json['created_at']),
+      updatedAt: serializer.fromJson<double>(json['updated_at']),
+      deleted: serializer.fromJson<bool>(json['deleted']),
     );
   }
   @override
@@ -113,15 +206,32 @@ class TodolistData extends DataClass implements Insertable<TodolistData> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
+      'created_at': serializer.toJson<double>(createdAt),
+      'updated_at': serializer.toJson<double>(updatedAt),
+      'deleted': serializer.toJson<bool>(deleted),
     };
   }
 
-  TodolistData copyWith({int? id, String? name}) =>
-      TodolistData(id: id ?? this.id, name: name ?? this.name);
+  TodolistData copyWith({
+    int? id,
+    String? name,
+    double? createdAt,
+    double? updatedAt,
+    bool? deleted,
+  }) => TodolistData(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deleted: deleted ?? this.deleted,
+  );
   TodolistData copyWithCompanion(TodolistCompanion data) {
     return TodolistData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deleted: data.deleted.present ? data.deleted.value : this.deleted,
     );
   }
 
@@ -129,42 +239,77 @@ class TodolistData extends DataClass implements Insertable<TodolistData> {
   String toString() {
     return (StringBuffer('TodolistData(')
           ..write('id: $id, ')
-          ..write('name: $name')
+          ..write('name: $name, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deleted: $deleted')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name);
+  int get hashCode => Object.hash(id, name, createdAt, updatedAt, deleted);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is TodolistData && other.id == this.id && other.name == this.name);
+      (other is TodolistData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deleted == this.deleted);
 }
 
 class TodolistCompanion extends UpdateCompanion<TodolistData> {
   final Value<int> id;
   final Value<String> name;
+  final Value<double> createdAt;
+  final Value<double> updatedAt;
+  final Value<bool> deleted;
   const TodolistCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deleted = const Value.absent(),
   });
   TodolistCompanion.insert({
     this.id = const Value.absent(),
     required String name,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deleted = const Value.absent(),
   }) : name = Value(name);
   static Insertable<TodolistData> custom({
     Expression<int>? id,
     Expression<String>? name,
+    Expression<double>? createdAt,
+    Expression<double>? updatedAt,
+    Expression<bool>? deleted,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deleted != null) 'deleted': deleted,
     });
   }
 
-  TodolistCompanion copyWith({Value<int>? id, Value<String>? name}) {
-    return TodolistCompanion(id: id ?? this.id, name: name ?? this.name);
+  TodolistCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<double>? createdAt,
+    Value<double>? updatedAt,
+    Value<bool>? deleted,
+  }) {
+    return TodolistCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deleted: deleted ?? this.deleted,
+    );
   }
 
   @override
@@ -176,6 +321,15 @@ class TodolistCompanion extends UpdateCompanion<TodolistData> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (createdAt.present) {
+      map['created_at'] = Variable<double>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<double>(updatedAt.value);
+    }
+    if (deleted.present) {
+      map['deleted'] = Variable<bool>(deleted.value);
+    }
     return map;
   }
 
@@ -183,7 +337,10 @@ class TodolistCompanion extends UpdateCompanion<TodolistData> {
   String toString() {
     return (StringBuffer('TodolistCompanion(')
           ..write('id: $id, ')
-          ..write('name: $name')
+          ..write('name: $name, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deleted: $deleted')
           ..write(')'))
         .toString();
   }
@@ -232,8 +389,52 @@ class Tasks extends Table with TableInfo<Tasks, Task> {
     requiredDuringInsert: true,
     $customConstraints: 'NOT NULL REFERENCES todolist(id)',
   );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  late final GeneratedColumn<double> createdAt = GeneratedColumn<double>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+    defaultValue: const CustomExpression('CURRENT_TIMESTAMP'),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  late final GeneratedColumn<double> updatedAt = GeneratedColumn<double>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+    defaultValue: const CustomExpression('CURRENT_TIMESTAMP'),
+  );
+  static const VerificationMeta _deletedMeta = const VerificationMeta(
+    'deleted',
+  );
+  late final GeneratedColumn<bool> deleted = GeneratedColumn<bool>(
+    'deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    $customConstraints: 'NOT NULL DEFAULT FALSE',
+    defaultValue: const CustomExpression('FALSE'),
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, task, done, listId];
+  List<GeneratedColumn> get $columns => [
+    id,
+    task,
+    done,
+    listId,
+    createdAt,
+    updatedAt,
+    deleted,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -271,6 +472,24 @@ class Tasks extends Table with TableInfo<Tasks, Task> {
     } else if (isInserting) {
       context.missing(_listIdMeta);
     }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('deleted')) {
+      context.handle(
+        _deletedMeta,
+        deleted.isAcceptableOrUnknown(data['deleted']!, _deletedMeta),
+      );
+    }
     return context;
   }
 
@@ -296,6 +515,18 @@ class Tasks extends Table with TableInfo<Tasks, Task> {
         DriftSqlType.int,
         data['${effectivePrefix}list_id'],
       )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}deleted'],
+      )!,
     );
   }
 
@@ -313,11 +544,17 @@ class Task extends DataClass implements Insertable<Task> {
   final String task;
   final bool done;
   final int listId;
+  final double createdAt;
+  final double updatedAt;
+  final bool deleted;
   const Task({
     required this.id,
     required this.task,
     required this.done,
     required this.listId,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.deleted,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -326,6 +563,9 @@ class Task extends DataClass implements Insertable<Task> {
     map['task'] = Variable<String>(task);
     map['done'] = Variable<bool>(done);
     map['list_id'] = Variable<int>(listId);
+    map['created_at'] = Variable<double>(createdAt);
+    map['updated_at'] = Variable<double>(updatedAt);
+    map['deleted'] = Variable<bool>(deleted);
     return map;
   }
 
@@ -335,6 +575,9 @@ class Task extends DataClass implements Insertable<Task> {
       task: Value(task),
       done: Value(done),
       listId: Value(listId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deleted: Value(deleted),
     );
   }
 
@@ -348,6 +591,9 @@ class Task extends DataClass implements Insertable<Task> {
       task: serializer.fromJson<String>(json['task']),
       done: serializer.fromJson<bool>(json['done']),
       listId: serializer.fromJson<int>(json['list_id']),
+      createdAt: serializer.fromJson<double>(json['created_at']),
+      updatedAt: serializer.fromJson<double>(json['updated_at']),
+      deleted: serializer.fromJson<bool>(json['deleted']),
     );
   }
   @override
@@ -358,14 +604,28 @@ class Task extends DataClass implements Insertable<Task> {
       'task': serializer.toJson<String>(task),
       'done': serializer.toJson<bool>(done),
       'list_id': serializer.toJson<int>(listId),
+      'created_at': serializer.toJson<double>(createdAt),
+      'updated_at': serializer.toJson<double>(updatedAt),
+      'deleted': serializer.toJson<bool>(deleted),
     };
   }
 
-  Task copyWith({int? id, String? task, bool? done, int? listId}) => Task(
+  Task copyWith({
+    int? id,
+    String? task,
+    bool? done,
+    int? listId,
+    double? createdAt,
+    double? updatedAt,
+    bool? deleted,
+  }) => Task(
     id: id ?? this.id,
     task: task ?? this.task,
     done: done ?? this.done,
     listId: listId ?? this.listId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deleted: deleted ?? this.deleted,
   );
   Task copyWithCompanion(TasksCompanion data) {
     return Task(
@@ -373,6 +633,9 @@ class Task extends DataClass implements Insertable<Task> {
       task: data.task.present ? data.task.value : this.task,
       done: data.done.present ? data.done.value : this.done,
       listId: data.listId.present ? data.listId.value : this.listId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deleted: data.deleted.present ? data.deleted.value : this.deleted,
     );
   }
 
@@ -382,13 +645,17 @@ class Task extends DataClass implements Insertable<Task> {
           ..write('id: $id, ')
           ..write('task: $task, ')
           ..write('done: $done, ')
-          ..write('listId: $listId')
+          ..write('listId: $listId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deleted: $deleted')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, task, done, listId);
+  int get hashCode =>
+      Object.hash(id, task, done, listId, createdAt, updatedAt, deleted);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -396,7 +663,10 @@ class Task extends DataClass implements Insertable<Task> {
           other.id == this.id &&
           other.task == this.task &&
           other.done == this.done &&
-          other.listId == this.listId);
+          other.listId == this.listId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deleted == this.deleted);
 }
 
 class TasksCompanion extends UpdateCompanion<Task> {
@@ -404,17 +674,26 @@ class TasksCompanion extends UpdateCompanion<Task> {
   final Value<String> task;
   final Value<bool> done;
   final Value<int> listId;
+  final Value<double> createdAt;
+  final Value<double> updatedAt;
+  final Value<bool> deleted;
   const TasksCompanion({
     this.id = const Value.absent(),
     this.task = const Value.absent(),
     this.done = const Value.absent(),
     this.listId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deleted = const Value.absent(),
   });
   TasksCompanion.insert({
     this.id = const Value.absent(),
     required String task,
     this.done = const Value.absent(),
     required int listId,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deleted = const Value.absent(),
   }) : task = Value(task),
        listId = Value(listId);
   static Insertable<Task> custom({
@@ -422,12 +701,18 @@ class TasksCompanion extends UpdateCompanion<Task> {
     Expression<String>? task,
     Expression<bool>? done,
     Expression<int>? listId,
+    Expression<double>? createdAt,
+    Expression<double>? updatedAt,
+    Expression<bool>? deleted,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (task != null) 'task': task,
       if (done != null) 'done': done,
       if (listId != null) 'list_id': listId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deleted != null) 'deleted': deleted,
     });
   }
 
@@ -436,12 +721,18 @@ class TasksCompanion extends UpdateCompanion<Task> {
     Value<String>? task,
     Value<bool>? done,
     Value<int>? listId,
+    Value<double>? createdAt,
+    Value<double>? updatedAt,
+    Value<bool>? deleted,
   }) {
     return TasksCompanion(
       id: id ?? this.id,
       task: task ?? this.task,
       done: done ?? this.done,
       listId: listId ?? this.listId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deleted: deleted ?? this.deleted,
     );
   }
 
@@ -460,6 +751,15 @@ class TasksCompanion extends UpdateCompanion<Task> {
     if (listId.present) {
       map['list_id'] = Variable<int>(listId.value);
     }
+    if (createdAt.present) {
+      map['created_at'] = Variable<double>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<double>(updatedAt.value);
+    }
+    if (deleted.present) {
+      map['deleted'] = Variable<bool>(deleted.value);
+    }
     return map;
   }
 
@@ -469,7 +769,10 @@ class TasksCompanion extends UpdateCompanion<Task> {
           ..write('id: $id, ')
           ..write('task: $task, ')
           ..write('done: $done, ')
-          ..write('listId: $listId')
+          ..write('listId: $listId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deleted: $deleted')
           ..write(')'))
         .toString();
   }
@@ -482,7 +785,7 @@ abstract class _$Database extends GeneratedDatabase {
   late final Tasks tasks = Tasks(this);
   Future<int> changeTask(String var1, int var2) {
     return customUpdate(
-      'UPDATE tasks SET task = ?1 WHERE id = ?2',
+      'UPDATE tasks SET task = ?1, updated_at = CURRENT_TIMESTAMP WHERE id = ?2',
       variables: [Variable<String>(var1), Variable<int>(var2)],
       updates: {tasks},
       updateKind: UpdateKind.update,
@@ -491,7 +794,7 @@ abstract class _$Database extends GeneratedDatabase {
 
   Selectable<String> getTaskName(int var1) {
     return customSelect(
-      'SELECT task FROM tasks WHERE id = ?1',
+      'SELECT task FROM tasks WHERE id = ?1 AND deleted = FALSE',
       variables: [Variable<int>(var1)],
       readsFrom: {tasks},
     ).map((QueryRow row) => row.read<String>('task'));
@@ -499,7 +802,7 @@ abstract class _$Database extends GeneratedDatabase {
 
   Selectable<Task> getAllTasks(int var1) {
     return customSelect(
-      'SELECT * FROM tasks WHERE list_id = ?1',
+      'SELECT * FROM tasks WHERE list_id = ?1 AND deleted = FALSE',
       variables: [Variable<int>(var1)],
       readsFrom: {tasks},
     ).asyncMap(tasks.mapFromRow);
@@ -507,7 +810,7 @@ abstract class _$Database extends GeneratedDatabase {
 
   Selectable<Task> getTask(int var1) {
     return customSelect(
-      'SELECT * FROM tasks WHERE id = ?1',
+      'SELECT * FROM tasks WHERE id = ?1 AND deleted = FALSE',
       variables: [Variable<int>(var1)],
       readsFrom: {tasks},
     ).asyncMap(tasks.mapFromRow);
@@ -515,7 +818,7 @@ abstract class _$Database extends GeneratedDatabase {
 
   Selectable<Task> getDoneTasks() {
     return customSelect(
-      'SELECT * FROM tasks WHERE done = TRUE',
+      'SELECT * FROM tasks WHERE done = TRUE AND deleted = FALSE',
       variables: [],
       readsFrom: {tasks},
     ).asyncMap(tasks.mapFromRow);
@@ -523,7 +826,7 @@ abstract class _$Database extends GeneratedDatabase {
 
   Future<int> updateTask(bool var1, int var2) {
     return customUpdate(
-      'UPDATE tasks SET done = ?1 WHERE id = ?2',
+      'UPDATE tasks SET done = ?1, updated_at = CURRENT_TIMESTAMP WHERE id = ?2',
       variables: [Variable<bool>(var1), Variable<int>(var2)],
       updates: {tasks},
       updateKind: UpdateKind.update,
@@ -532,13 +835,22 @@ abstract class _$Database extends GeneratedDatabase {
 
   Selectable<Task> getUndoneTasks() {
     return customSelect(
-      'SELECT * FROM tasks WHERE done = FALSE',
+      'SELECT * FROM tasks WHERE done = FALSE AND deleted = FALSE',
       variables: [],
       readsFrom: {tasks},
     ).asyncMap(tasks.mapFromRow);
   }
 
-  Future<int> deleteTask(int var1) {
+  Future<int> softDeleteTask(int var1) {
+    return customUpdate(
+      'UPDATE tasks SET deleted = TRUE AND updated_at = CURRENT_TIMESTAMP WHERE id = ?1',
+      variables: [Variable<int>(var1)],
+      updates: {tasks},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Future<int> HardDeleteTask(int var1) {
     return customUpdate(
       'DELETE FROM tasks WHERE id = ?1',
       variables: [Variable<int>(var1)],
@@ -561,7 +873,7 @@ abstract class _$Database extends GeneratedDatabase {
 
   Selectable<Task> getDoneTrueFirst() {
     return customSelect(
-      'SELECT * FROM tasks ORDER BY done DESC',
+      'SELECT * FROM tasks WHERE deleted = FALSE ORDER BY done DESC',
       variables: [],
       readsFrom: {tasks},
     ).asyncMap(tasks.mapFromRow);
@@ -569,7 +881,7 @@ abstract class _$Database extends GeneratedDatabase {
 
   Selectable<Task> getDoneFalseFirst() {
     return customSelect(
-      'SELECT * FROM tasks ORDER BY done ASC',
+      'SELECT * FROM tasks WHERE deleted = FALSE ORDER BY done ASC',
       variables: [],
       readsFrom: {tasks},
     ).asyncMap(tasks.mapFromRow);
@@ -577,7 +889,7 @@ abstract class _$Database extends GeneratedDatabase {
 
   Selectable<Task> getOnlyDoneTrue() {
     return customSelect(
-      'SELECT * FROM tasks WHERE done = TRUE',
+      'SELECT * FROM tasks WHERE done = TRUE AND deleted = FALSE',
       variables: [],
       readsFrom: {tasks},
     ).asyncMap(tasks.mapFromRow);
@@ -585,7 +897,7 @@ abstract class _$Database extends GeneratedDatabase {
 
   Selectable<Task> getOnlyDoneFalse() {
     return customSelect(
-      'SELECT * FROM tasks WHERE done = FALSE',
+      'SELECT * FROM tasks WHERE done = FALSE AND deleted = FALSE',
       variables: [],
       readsFrom: {tasks},
     ).asyncMap(tasks.mapFromRow);
@@ -593,7 +905,7 @@ abstract class _$Database extends GeneratedDatabase {
 
   Future<int> createList(String var1) {
     return customInsert(
-      'INSERT INTO todolist (name) VALUES (?1)',
+      'INSERT INTO todolist (name, created_at, updated_at) VALUES (?1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)',
       variables: [Variable<String>(var1)],
       updates: {todolist},
     );
@@ -601,7 +913,7 @@ abstract class _$Database extends GeneratedDatabase {
 
   Selectable<TodolistData> getAllLists() {
     return customSelect(
-      'SELECT * FROM todolist',
+      'SELECT * FROM todolist WHERE deleted = FALSE',
       variables: [],
       readsFrom: {todolist},
     ).asyncMap(todolist.mapFromRow);
@@ -615,9 +927,21 @@ abstract class _$Database extends GeneratedDatabase {
 }
 
 typedef $TodolistCreateCompanionBuilder =
-    TodolistCompanion Function({Value<int> id, required String name});
+    TodolistCompanion Function({
+      Value<int> id,
+      required String name,
+      Value<double> createdAt,
+      Value<double> updatedAt,
+      Value<bool> deleted,
+    });
 typedef $TodolistUpdateCompanionBuilder =
-    TodolistCompanion Function({Value<int> id, Value<String> name});
+    TodolistCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<double> createdAt,
+      Value<double> updatedAt,
+      Value<bool> deleted,
+    });
 
 final class $TodolistReferences
     extends BaseReferences<_$Database, Todolist, TodolistData> {
@@ -658,6 +982,21 @@ class $TodolistFilterComposer extends Composer<_$Database, Todolist> {
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get deleted => $composableBuilder(
+    column: $table.deleted,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -704,6 +1043,21 @@ class $TodolistOrderingComposer extends Composer<_$Database, Todolist> {
     column: $table.name,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<double> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get deleted => $composableBuilder(
+    column: $table.deleted,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $TodolistAnnotationComposer extends Composer<_$Database, Todolist> {
@@ -719,6 +1073,15 @@ class $TodolistAnnotationComposer extends Composer<_$Database, Todolist> {
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<double> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<double> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get deleted =>
+      $composableBuilder(column: $table.deleted, builder: (column) => column);
 
   Expression<T> tasksRefs<T extends Object>(
     Expression<T> Function($TasksAnnotationComposer a) f,
@@ -776,10 +1139,30 @@ class $TodolistTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-              }) => TodolistCompanion(id: id, name: name),
+                Value<double> createdAt = const Value.absent(),
+                Value<double> updatedAt = const Value.absent(),
+                Value<bool> deleted = const Value.absent(),
+              }) => TodolistCompanion(
+                id: id,
+                name: name,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deleted: deleted,
+              ),
           createCompanionCallback:
-              ({Value<int> id = const Value.absent(), required String name}) =>
-                  TodolistCompanion.insert(id: id, name: name),
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                Value<double> createdAt = const Value.absent(),
+                Value<double> updatedAt = const Value.absent(),
+                Value<bool> deleted = const Value.absent(),
+              }) => TodolistCompanion.insert(
+                id: id,
+                name: name,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deleted: deleted,
+              ),
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (e.readTable(table), $TodolistReferences(db, table, e)),
@@ -830,6 +1213,9 @@ typedef $TasksCreateCompanionBuilder =
       required String task,
       Value<bool> done,
       required int listId,
+      Value<double> createdAt,
+      Value<double> updatedAt,
+      Value<bool> deleted,
     });
 typedef $TasksUpdateCompanionBuilder =
     TasksCompanion Function({
@@ -837,6 +1223,9 @@ typedef $TasksUpdateCompanionBuilder =
       Value<String> task,
       Value<bool> done,
       Value<int> listId,
+      Value<double> createdAt,
+      Value<double> updatedAt,
+      Value<bool> deleted,
     });
 
 final class $TasksReferences extends BaseReferences<_$Database, Tasks, Task> {
@@ -881,6 +1270,21 @@ class $TasksFilterComposer extends Composer<_$Database, Tasks> {
 
   ColumnFilters<bool> get done => $composableBuilder(
     column: $table.done,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get deleted => $composableBuilder(
+    column: $table.deleted,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -931,6 +1335,21 @@ class $TasksOrderingComposer extends Composer<_$Database, Tasks> {
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<double> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get deleted => $composableBuilder(
+    column: $table.deleted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $TodolistOrderingComposer get listId {
     final $TodolistOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -971,6 +1390,15 @@ class $TasksAnnotationComposer extends Composer<_$Database, Tasks> {
 
   GeneratedColumn<bool> get done =>
       $composableBuilder(column: $table.done, builder: (column) => column);
+
+  GeneratedColumn<double> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<double> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get deleted =>
+      $composableBuilder(column: $table.deleted, builder: (column) => column);
 
   $TodolistAnnotationComposer get listId {
     final $TodolistAnnotationComposer composer = $composerBuilder(
@@ -1028,11 +1456,17 @@ class $TasksTableManager
                 Value<String> task = const Value.absent(),
                 Value<bool> done = const Value.absent(),
                 Value<int> listId = const Value.absent(),
+                Value<double> createdAt = const Value.absent(),
+                Value<double> updatedAt = const Value.absent(),
+                Value<bool> deleted = const Value.absent(),
               }) => TasksCompanion(
                 id: id,
                 task: task,
                 done: done,
                 listId: listId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deleted: deleted,
               ),
           createCompanionCallback:
               ({
@@ -1040,11 +1474,17 @@ class $TasksTableManager
                 required String task,
                 Value<bool> done = const Value.absent(),
                 required int listId,
+                Value<double> createdAt = const Value.absent(),
+                Value<double> updatedAt = const Value.absent(),
+                Value<bool> deleted = const Value.absent(),
               }) => TasksCompanion.insert(
                 id: id,
                 task: task,
                 done: done,
                 listId: listId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deleted: deleted,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), $TasksReferences(db, table, e)))

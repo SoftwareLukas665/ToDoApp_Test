@@ -196,7 +196,7 @@ class _taskSideState extends State<taskSide> {
                                 }, icon: Icon(Icons.edit)),
 
                                 IconButton(onPressed: () {
-                                  widget.database.deleteTask(task.id);
+                                  widget.database.softDeleteTask(task.id);
                                 }, icon: Icon(Icons.delete)),
                               ],
                             ),
