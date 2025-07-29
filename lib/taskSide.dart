@@ -28,18 +28,22 @@ class _taskSideState extends State<taskSide> {
     //Überprüfung nach Filtereinstellungen des Nutzers
     Stream<Object?>? checkSortAndFilterOption (String? itemSelected) {
       if (itemSelected == "Unerledigt") {
-        return widget.database.getOnlyDoneFalse().watch();
+        print("Unerledigt");
+        return widget.database.taskDao.getOnlyDoneFalse(widget.list_id);
       } else if (itemSelected == "Erledigt") {
-        return widget.database.getOnlyDoneTrue().watch();
+        print("Erledigt");
+        return widget.database.taskDao.getOnlyDoneTrue(widget.list_id);
       } else if (itemSelected == "ErledigtZuerst") {
-        return widget.database.getDoneTrueFirst().watch();
+        print("ErledigtZuerst");
+        return widget.database.taskDao.getDoneTrueFirst(widget.list_id);
       } else if (itemSelected == "UnerledigtZuerst") {
-        return widget.database.getDoneFalseFirst().watch();
+        print("UnerledigtZuerst");
+        return widget.database.taskDao.getDoneFalseFirst(widget.list_id);
       } else {
-        return widget.database.getAllTasks(widget.list_id).watch();
+        print("Alle Aufgaben");
+        return widget.database.taskDao.getAllTasks(widget.list_id);
       }
     }
-
 
     String getSelectedItem (){
       return item;
@@ -86,7 +90,7 @@ class _taskSideState extends State<taskSide> {
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white),
                         onPressed: () {
-                          widget.database.createTask(textEditingController.text, false, widget.list_id);
+                          widget.database.taskDao.createTask(textEditingController.text, widget.list_id);
                           textEditingController.clear();
                         }, child: Text("Bestätigen")
                     ),
@@ -183,7 +187,7 @@ class _taskSideState extends State<taskSide> {
                                                 backgroundColor: Colors.black,
                                                 foregroundColor: Colors.white),
                                                 onPressed: () {
-                                                  widget.database.changeTask(EditTaskController.text, task.id);
+                                                  widget.database.taskDao.changeTask(task.id, EditTaskController.text);
                                                   Navigator.of(context).pop();
                                                   EditTaskController.clear();
                                                 }, child: Text("Änderungen bestätigen")
@@ -196,13 +200,13 @@ class _taskSideState extends State<taskSide> {
                                 }, icon: Icon(Icons.edit)),
 
                                 IconButton(onPressed: () {
-                                  widget.database.softDeleteTask(task.id);
+                                  widget.database.taskDao.softDeleteTask(task.id);
                                 }, icon: Icon(Icons.delete)),
                               ],
                             ),
                             leading: Checkbox(value: task.done,
                               onChanged: (value) {
-                                widget.database.updateTask(value!, task.id);
+                                widget.database.taskDao.updateTask(task.id, value!);
                               },
                             ),
                           );

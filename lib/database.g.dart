@@ -3,12 +3,14 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class Todolist extends Table with TableInfo<Todolist, TodolistData> {
+class $TodolistTable extends Todolist
+    with TableInfo<$TodolistTable, TodolistData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  Todolist(this.attachedDatabase, [this._alias]);
+  $TodolistTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
     'id',
     aliasedName,
@@ -16,52 +18,58 @@ class Todolist extends Table with TableInfo<Todolist, TodolistData> {
     hasAutoIncrement: true,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT',
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
     'name',
     aliasedName,
     false,
+    additionalChecks: GeneratedColumn.checkTextLength(minTextLength: 1),
     type: DriftSqlType.string,
     requiredDuringInsert: true,
-    $customConstraints: 'NOT NULL',
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
-  late final GeneratedColumn<double> createdAt = GeneratedColumn<double>(
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
     'created_at',
     aliasedName,
     false,
-    type: DriftSqlType.double,
+    type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
-    $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
-    defaultValue: const CustomExpression('CURRENT_TIMESTAMP'),
+    defaultValue: currentDateAndTime,
   );
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
   );
-  late final GeneratedColumn<double> updatedAt = GeneratedColumn<double>(
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
     'updated_at',
     aliasedName,
     false,
-    type: DriftSqlType.double,
+    type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
-    $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
-    defaultValue: const CustomExpression('CURRENT_TIMESTAMP'),
+    defaultValue: currentDateAndTime,
   );
   static const VerificationMeta _deletedMeta = const VerificationMeta(
     'deleted',
   );
+  @override
   late final GeneratedColumn<bool> deleted = GeneratedColumn<bool>(
     'deleted',
     aliasedName,
     false,
     type: DriftSqlType.bool,
     requiredDuringInsert: false,
-    $customConstraints: 'NOT NULL DEFAULT FALSE',
-    defaultValue: const CustomExpression('FALSE'),
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("deleted" IN (0, 1))',
+    ),
+    defaultValue: Constant(false),
   );
   @override
   List<GeneratedColumn> get $columns => [
@@ -130,11 +138,11 @@ class Todolist extends Table with TableInfo<Todolist, TodolistData> {
         data['${effectivePrefix}name'],
       )!,
       createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.double,
+        DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
       updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.double,
+        DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
       deleted: attachedDatabase.typeMapping.read(
@@ -145,19 +153,16 @@ class Todolist extends Table with TableInfo<Todolist, TodolistData> {
   }
 
   @override
-  Todolist createAlias(String alias) {
-    return Todolist(attachedDatabase, alias);
+  $TodolistTable createAlias(String alias) {
+    return $TodolistTable(attachedDatabase, alias);
   }
-
-  @override
-  bool get dontWriteConstraints => true;
 }
 
 class TodolistData extends DataClass implements Insertable<TodolistData> {
   final int id;
   final String name;
-  final double createdAt;
-  final double updatedAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   final bool deleted;
   const TodolistData({
     required this.id,
@@ -171,8 +176,8 @@ class TodolistData extends DataClass implements Insertable<TodolistData> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    map['created_at'] = Variable<double>(createdAt);
-    map['updated_at'] = Variable<double>(updatedAt);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
     map['deleted'] = Variable<bool>(deleted);
     return map;
   }
@@ -195,8 +200,8 @@ class TodolistData extends DataClass implements Insertable<TodolistData> {
     return TodolistData(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      createdAt: serializer.fromJson<double>(json['created_at']),
-      updatedAt: serializer.fromJson<double>(json['updated_at']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       deleted: serializer.fromJson<bool>(json['deleted']),
     );
   }
@@ -206,8 +211,8 @@ class TodolistData extends DataClass implements Insertable<TodolistData> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'created_at': serializer.toJson<double>(createdAt),
-      'updated_at': serializer.toJson<double>(updatedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'deleted': serializer.toJson<bool>(deleted),
     };
   }
@@ -215,8 +220,8 @@ class TodolistData extends DataClass implements Insertable<TodolistData> {
   TodolistData copyWith({
     int? id,
     String? name,
-    double? createdAt,
-    double? updatedAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
     bool? deleted,
   }) => TodolistData(
     id: id ?? this.id,
@@ -263,8 +268,8 @@ class TodolistData extends DataClass implements Insertable<TodolistData> {
 class TodolistCompanion extends UpdateCompanion<TodolistData> {
   final Value<int> id;
   final Value<String> name;
-  final Value<double> createdAt;
-  final Value<double> updatedAt;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   final Value<bool> deleted;
   const TodolistCompanion({
     this.id = const Value.absent(),
@@ -283,8 +288,8 @@ class TodolistCompanion extends UpdateCompanion<TodolistData> {
   static Insertable<TodolistData> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<double>? createdAt,
-    Expression<double>? updatedAt,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
     Expression<bool>? deleted,
   }) {
     return RawValuesInsertable({
@@ -299,8 +304,8 @@ class TodolistCompanion extends UpdateCompanion<TodolistData> {
   TodolistCompanion copyWith({
     Value<int>? id,
     Value<String>? name,
-    Value<double>? createdAt,
-    Value<double>? updatedAt,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
     Value<bool>? deleted,
   }) {
     return TodolistCompanion(
@@ -322,10 +327,10 @@ class TodolistCompanion extends UpdateCompanion<TodolistData> {
       map['name'] = Variable<String>(name.value);
     }
     if (createdAt.present) {
-      map['created_at'] = Variable<double>(createdAt.value);
+      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (updatedAt.present) {
-      map['updated_at'] = Variable<double>(updatedAt.value);
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     if (deleted.present) {
       map['deleted'] = Variable<bool>(deleted.value);
@@ -346,12 +351,13 @@ class TodolistCompanion extends UpdateCompanion<TodolistData> {
   }
 }
 
-class Tasks extends Table with TableInfo<Tasks, Task> {
+class $TaskTable extends Task with TableInfo<$TaskTable, TaskData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  Tasks(this.attachedDatabase, [this._alias]);
+  $TaskTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
     'id',
     aliasedName,
@@ -359,78 +365,90 @@ class Tasks extends Table with TableInfo<Tasks, Task> {
     hasAutoIncrement: true,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT',
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
   );
   static const VerificationMeta _taskMeta = const VerificationMeta('task');
+  @override
   late final GeneratedColumn<String> task = GeneratedColumn<String>(
     'task',
     aliasedName,
     false,
+    additionalChecks: GeneratedColumn.checkTextLength(minTextLength: 1),
     type: DriftSqlType.string,
     requiredDuringInsert: true,
-    $customConstraints: 'NOT NULL',
-  );
-  static const VerificationMeta _doneMeta = const VerificationMeta('done');
-  late final GeneratedColumn<bool> done = GeneratedColumn<bool>(
-    'done',
-    aliasedName,
-    false,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    $customConstraints: 'NOT NULL DEFAULT FALSE',
-    defaultValue: const CustomExpression('FALSE'),
   );
   static const VerificationMeta _listIdMeta = const VerificationMeta('listId');
+  @override
   late final GeneratedColumn<int> listId = GeneratedColumn<int>(
     'list_id',
     aliasedName,
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
-    $customConstraints: 'NOT NULL REFERENCES todolist(id)',
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES todolist (id)',
+    ),
+  );
+  static const VerificationMeta _doneMeta = const VerificationMeta('done');
+  @override
+  late final GeneratedColumn<bool> done = GeneratedColumn<bool>(
+    'done',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("done" IN (0, 1))',
+    ),
+    defaultValue: Constant(false),
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
-  late final GeneratedColumn<double> createdAt = GeneratedColumn<double>(
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
     'created_at',
     aliasedName,
     false,
-    type: DriftSqlType.double,
+    type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
-    $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
-    defaultValue: const CustomExpression('CURRENT_TIMESTAMP'),
+    defaultValue: currentDateAndTime,
   );
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
   );
-  late final GeneratedColumn<double> updatedAt = GeneratedColumn<double>(
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
     'updated_at',
     aliasedName,
     false,
-    type: DriftSqlType.double,
+    type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
-    $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
-    defaultValue: const CustomExpression('CURRENT_TIMESTAMP'),
+    defaultValue: currentDateAndTime,
   );
   static const VerificationMeta _deletedMeta = const VerificationMeta(
     'deleted',
   );
+  @override
   late final GeneratedColumn<bool> deleted = GeneratedColumn<bool>(
     'deleted',
     aliasedName,
     false,
     type: DriftSqlType.bool,
     requiredDuringInsert: false,
-    $customConstraints: 'NOT NULL DEFAULT FALSE',
-    defaultValue: const CustomExpression('FALSE'),
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("deleted" IN (0, 1))',
+    ),
+    defaultValue: Constant(false),
   );
   @override
   List<GeneratedColumn> get $columns => [
     id,
     task,
-    done,
     listId,
+    done,
     createdAt,
     updatedAt,
     deleted,
@@ -439,10 +457,10 @@ class Tasks extends Table with TableInfo<Tasks, Task> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'tasks';
+  static const String $name = 'task';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Task> instance, {
+    Insertable<TaskData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -458,12 +476,6 @@ class Tasks extends Table with TableInfo<Tasks, Task> {
     } else if (isInserting) {
       context.missing(_taskMeta);
     }
-    if (data.containsKey('done')) {
-      context.handle(
-        _doneMeta,
-        done.isAcceptableOrUnknown(data['done']!, _doneMeta),
-      );
-    }
     if (data.containsKey('list_id')) {
       context.handle(
         _listIdMeta,
@@ -471,6 +483,12 @@ class Tasks extends Table with TableInfo<Tasks, Task> {
       );
     } else if (isInserting) {
       context.missing(_listIdMeta);
+    }
+    if (data.containsKey('done')) {
+      context.handle(
+        _doneMeta,
+        done.isAcceptableOrUnknown(data['done']!, _doneMeta),
+      );
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -496,9 +514,9 @@ class Tasks extends Table with TableInfo<Tasks, Task> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Task map(Map<String, dynamic> data, {String? tablePrefix}) {
+  TaskData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Task(
+    return TaskData(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -507,20 +525,20 @@ class Tasks extends Table with TableInfo<Tasks, Task> {
         DriftSqlType.string,
         data['${effectivePrefix}task'],
       )!,
-      done: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}done'],
-      )!,
       listId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}list_id'],
       )!,
+      done: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}done'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.double,
+        DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
       updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.double,
+        DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
       deleted: attachedDatabase.typeMapping.read(
@@ -531,27 +549,24 @@ class Tasks extends Table with TableInfo<Tasks, Task> {
   }
 
   @override
-  Tasks createAlias(String alias) {
-    return Tasks(attachedDatabase, alias);
+  $TaskTable createAlias(String alias) {
+    return $TaskTable(attachedDatabase, alias);
   }
-
-  @override
-  bool get dontWriteConstraints => true;
 }
 
-class Task extends DataClass implements Insertable<Task> {
+class TaskData extends DataClass implements Insertable<TaskData> {
   final int id;
   final String task;
-  final bool done;
   final int listId;
-  final double createdAt;
-  final double updatedAt;
+  final bool done;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   final bool deleted;
-  const Task({
+  const TaskData({
     required this.id,
     required this.task,
-    required this.done,
     required this.listId,
+    required this.done,
     required this.createdAt,
     required this.updatedAt,
     required this.deleted,
@@ -561,38 +576,38 @@ class Task extends DataClass implements Insertable<Task> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['task'] = Variable<String>(task);
-    map['done'] = Variable<bool>(done);
     map['list_id'] = Variable<int>(listId);
-    map['created_at'] = Variable<double>(createdAt);
-    map['updated_at'] = Variable<double>(updatedAt);
+    map['done'] = Variable<bool>(done);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
     map['deleted'] = Variable<bool>(deleted);
     return map;
   }
 
-  TasksCompanion toCompanion(bool nullToAbsent) {
-    return TasksCompanion(
+  TaskCompanion toCompanion(bool nullToAbsent) {
+    return TaskCompanion(
       id: Value(id),
       task: Value(task),
-      done: Value(done),
       listId: Value(listId),
+      done: Value(done),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
       deleted: Value(deleted),
     );
   }
 
-  factory Task.fromJson(
+  factory TaskData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Task(
+    return TaskData(
       id: serializer.fromJson<int>(json['id']),
       task: serializer.fromJson<String>(json['task']),
+      listId: serializer.fromJson<int>(json['listId']),
       done: serializer.fromJson<bool>(json['done']),
-      listId: serializer.fromJson<int>(json['list_id']),
-      createdAt: serializer.fromJson<double>(json['created_at']),
-      updatedAt: serializer.fromJson<double>(json['updated_at']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       deleted: serializer.fromJson<bool>(json['deleted']),
     );
   }
@@ -602,37 +617,37 @@ class Task extends DataClass implements Insertable<Task> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'task': serializer.toJson<String>(task),
+      'listId': serializer.toJson<int>(listId),
       'done': serializer.toJson<bool>(done),
-      'list_id': serializer.toJson<int>(listId),
-      'created_at': serializer.toJson<double>(createdAt),
-      'updated_at': serializer.toJson<double>(updatedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'deleted': serializer.toJson<bool>(deleted),
     };
   }
 
-  Task copyWith({
+  TaskData copyWith({
     int? id,
     String? task,
-    bool? done,
     int? listId,
-    double? createdAt,
-    double? updatedAt,
+    bool? done,
+    DateTime? createdAt,
+    DateTime? updatedAt,
     bool? deleted,
-  }) => Task(
+  }) => TaskData(
     id: id ?? this.id,
     task: task ?? this.task,
-    done: done ?? this.done,
     listId: listId ?? this.listId,
+    done: done ?? this.done,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     deleted: deleted ?? this.deleted,
   );
-  Task copyWithCompanion(TasksCompanion data) {
-    return Task(
+  TaskData copyWithCompanion(TaskCompanion data) {
+    return TaskData(
       id: data.id.present ? data.id.value : this.id,
       task: data.task.present ? data.task.value : this.task,
-      done: data.done.present ? data.done.value : this.done,
       listId: data.listId.present ? data.listId.value : this.listId,
+      done: data.done.present ? data.done.value : this.done,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       deleted: data.deleted.present ? data.deleted.value : this.deleted,
@@ -641,11 +656,11 @@ class Task extends DataClass implements Insertable<Task> {
 
   @override
   String toString() {
-    return (StringBuffer('Task(')
+    return (StringBuffer('TaskData(')
           ..write('id: $id, ')
           ..write('task: $task, ')
-          ..write('done: $done, ')
           ..write('listId: $listId, ')
+          ..write('done: $done, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deleted: $deleted')
@@ -655,81 +670,81 @@ class Task extends DataClass implements Insertable<Task> {
 
   @override
   int get hashCode =>
-      Object.hash(id, task, done, listId, createdAt, updatedAt, deleted);
+      Object.hash(id, task, listId, done, createdAt, updatedAt, deleted);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Task &&
+      (other is TaskData &&
           other.id == this.id &&
           other.task == this.task &&
-          other.done == this.done &&
           other.listId == this.listId &&
+          other.done == this.done &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.deleted == this.deleted);
 }
 
-class TasksCompanion extends UpdateCompanion<Task> {
+class TaskCompanion extends UpdateCompanion<TaskData> {
   final Value<int> id;
   final Value<String> task;
-  final Value<bool> done;
   final Value<int> listId;
-  final Value<double> createdAt;
-  final Value<double> updatedAt;
+  final Value<bool> done;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   final Value<bool> deleted;
-  const TasksCompanion({
+  const TaskCompanion({
     this.id = const Value.absent(),
     this.task = const Value.absent(),
-    this.done = const Value.absent(),
     this.listId = const Value.absent(),
+    this.done = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.deleted = const Value.absent(),
   });
-  TasksCompanion.insert({
+  TaskCompanion.insert({
     this.id = const Value.absent(),
     required String task,
-    this.done = const Value.absent(),
     required int listId,
+    this.done = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.deleted = const Value.absent(),
   }) : task = Value(task),
        listId = Value(listId);
-  static Insertable<Task> custom({
+  static Insertable<TaskData> custom({
     Expression<int>? id,
     Expression<String>? task,
-    Expression<bool>? done,
     Expression<int>? listId,
-    Expression<double>? createdAt,
-    Expression<double>? updatedAt,
+    Expression<bool>? done,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
     Expression<bool>? deleted,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (task != null) 'task': task,
-      if (done != null) 'done': done,
       if (listId != null) 'list_id': listId,
+      if (done != null) 'done': done,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (deleted != null) 'deleted': deleted,
     });
   }
 
-  TasksCompanion copyWith({
+  TaskCompanion copyWith({
     Value<int>? id,
     Value<String>? task,
-    Value<bool>? done,
     Value<int>? listId,
-    Value<double>? createdAt,
-    Value<double>? updatedAt,
+    Value<bool>? done,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
     Value<bool>? deleted,
   }) {
-    return TasksCompanion(
+    return TaskCompanion(
       id: id ?? this.id,
       task: task ?? this.task,
-      done: done ?? this.done,
       listId: listId ?? this.listId,
+      done: done ?? this.done,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       deleted: deleted ?? this.deleted,
@@ -745,17 +760,17 @@ class TasksCompanion extends UpdateCompanion<Task> {
     if (task.present) {
       map['task'] = Variable<String>(task.value);
     }
-    if (done.present) {
-      map['done'] = Variable<bool>(done.value);
-    }
     if (listId.present) {
       map['list_id'] = Variable<int>(listId.value);
     }
+    if (done.present) {
+      map['done'] = Variable<bool>(done.value);
+    }
     if (createdAt.present) {
-      map['created_at'] = Variable<double>(createdAt.value);
+      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (updatedAt.present) {
-      map['updated_at'] = Variable<double>(updatedAt.value);
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     if (deleted.present) {
       map['deleted'] = Variable<bool>(deleted.value);
@@ -765,11 +780,11 @@ class TasksCompanion extends UpdateCompanion<Task> {
 
   @override
   String toString() {
-    return (StringBuffer('TasksCompanion(')
+    return (StringBuffer('TaskCompanion(')
           ..write('id: $id, ')
           ..write('task: $task, ')
-          ..write('done: $done, ')
           ..write('listId: $listId, ')
+          ..write('done: $done, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deleted: $deleted')
@@ -781,194 +796,61 @@ class TasksCompanion extends UpdateCompanion<Task> {
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(e);
   $DatabaseManager get managers => $DatabaseManager(this);
-  late final Todolist todolist = Todolist(this);
-  late final Tasks tasks = Tasks(this);
-  Future<int> changeTask(String var1, int var2) {
-    return customUpdate(
-      'UPDATE tasks SET task = ?1, updated_at = CURRENT_TIMESTAMP WHERE id = ?2',
-      variables: [Variable<String>(var1), Variable<int>(var2)],
-      updates: {tasks},
-      updateKind: UpdateKind.update,
-    );
-  }
-
-  Selectable<String> getTaskName(int var1) {
-    return customSelect(
-      'SELECT task FROM tasks WHERE id = ?1 AND deleted = FALSE',
-      variables: [Variable<int>(var1)],
-      readsFrom: {tasks},
-    ).map((QueryRow row) => row.read<String>('task'));
-  }
-
-  Selectable<Task> getAllTasks(int var1) {
-    return customSelect(
-      'SELECT * FROM tasks WHERE list_id = ?1 AND deleted = FALSE',
-      variables: [Variable<int>(var1)],
-      readsFrom: {tasks},
-    ).asyncMap(tasks.mapFromRow);
-  }
-
-  Selectable<Task> getTask(int var1) {
-    return customSelect(
-      'SELECT * FROM tasks WHERE id = ?1 AND deleted = FALSE',
-      variables: [Variable<int>(var1)],
-      readsFrom: {tasks},
-    ).asyncMap(tasks.mapFromRow);
-  }
-
-  Selectable<Task> getDoneTasks() {
-    return customSelect(
-      'SELECT * FROM tasks WHERE done = TRUE AND deleted = FALSE',
-      variables: [],
-      readsFrom: {tasks},
-    ).asyncMap(tasks.mapFromRow);
-  }
-
-  Future<int> updateTask(bool var1, int var2) {
-    return customUpdate(
-      'UPDATE tasks SET done = ?1, updated_at = CURRENT_TIMESTAMP WHERE id = ?2',
-      variables: [Variable<bool>(var1), Variable<int>(var2)],
-      updates: {tasks},
-      updateKind: UpdateKind.update,
-    );
-  }
-
-  Selectable<Task> getUndoneTasks() {
-    return customSelect(
-      'SELECT * FROM tasks WHERE done = FALSE AND deleted = FALSE',
-      variables: [],
-      readsFrom: {tasks},
-    ).asyncMap(tasks.mapFromRow);
-  }
-
-  Future<int> softDeleteTask(int var1) {
-    return customUpdate(
-      'UPDATE tasks SET deleted = TRUE AND updated_at = CURRENT_TIMESTAMP WHERE id = ?1',
-      variables: [Variable<int>(var1)],
-      updates: {tasks},
-      updateKind: UpdateKind.update,
-    );
-  }
-
-  Future<int> HardDeleteTask(int var1) {
-    return customUpdate(
-      'DELETE FROM tasks WHERE id = ?1',
-      variables: [Variable<int>(var1)],
-      updates: {tasks},
-      updateKind: UpdateKind.delete,
-    );
-  }
-
-  Future<int> createTask(String var1, bool var2, int var3) {
-    return customInsert(
-      'INSERT INTO tasks (task, done, list_id) VALUES (?1, ?2, ?3)',
-      variables: [
-        Variable<String>(var1),
-        Variable<bool>(var2),
-        Variable<int>(var3),
-      ],
-      updates: {tasks},
-    );
-  }
-
-  Selectable<Task> getDoneTrueFirst() {
-    return customSelect(
-      'SELECT * FROM tasks WHERE deleted = FALSE ORDER BY done DESC',
-      variables: [],
-      readsFrom: {tasks},
-    ).asyncMap(tasks.mapFromRow);
-  }
-
-  Selectable<Task> getDoneFalseFirst() {
-    return customSelect(
-      'SELECT * FROM tasks WHERE deleted = FALSE ORDER BY done ASC',
-      variables: [],
-      readsFrom: {tasks},
-    ).asyncMap(tasks.mapFromRow);
-  }
-
-  Selectable<Task> getOnlyDoneTrue() {
-    return customSelect(
-      'SELECT * FROM tasks WHERE done = TRUE AND deleted = FALSE',
-      variables: [],
-      readsFrom: {tasks},
-    ).asyncMap(tasks.mapFromRow);
-  }
-
-  Selectable<Task> getOnlyDoneFalse() {
-    return customSelect(
-      'SELECT * FROM tasks WHERE done = FALSE AND deleted = FALSE',
-      variables: [],
-      readsFrom: {tasks},
-    ).asyncMap(tasks.mapFromRow);
-  }
-
-  Future<int> createList(String var1) {
-    return customInsert(
-      'INSERT INTO todolist (name, created_at, updated_at) VALUES (?1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)',
-      variables: [Variable<String>(var1)],
-      updates: {todolist},
-    );
-  }
-
-  Selectable<TodolistData> getAllLists() {
-    return customSelect(
-      'SELECT * FROM todolist WHERE deleted = FALSE',
-      variables: [],
-      readsFrom: {todolist},
-    ).asyncMap(todolist.mapFromRow);
-  }
-
+  late final $TodolistTable todolist = $TodolistTable(this);
+  late final $TaskTable task = $TaskTable(this);
+  late final TaskDao taskDao = TaskDao(this as Database);
+  late final TodolistDao todolistDao = TodolistDao(this as Database);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [todolist, tasks];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [todolist, task];
 }
 
-typedef $TodolistCreateCompanionBuilder =
+typedef $$TodolistTableCreateCompanionBuilder =
     TodolistCompanion Function({
       Value<int> id,
       required String name,
-      Value<double> createdAt,
-      Value<double> updatedAt,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
       Value<bool> deleted,
     });
-typedef $TodolistUpdateCompanionBuilder =
+typedef $$TodolistTableUpdateCompanionBuilder =
     TodolistCompanion Function({
       Value<int> id,
       Value<String> name,
-      Value<double> createdAt,
-      Value<double> updatedAt,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
       Value<bool> deleted,
     });
 
-final class $TodolistReferences
-    extends BaseReferences<_$Database, Todolist, TodolistData> {
-  $TodolistReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$TodolistTableReferences
+    extends BaseReferences<_$Database, $TodolistTable, TodolistData> {
+  $$TodolistTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<Tasks, List<Task>> _tasksRefsTable(
+  static MultiTypedResultKey<$TaskTable, List<TaskData>> _taskRefsTable(
     _$Database db,
   ) => MultiTypedResultKey.fromTable(
-    db.tasks,
-    aliasName: $_aliasNameGenerator(db.todolist.id, db.tasks.listId),
+    db.task,
+    aliasName: $_aliasNameGenerator(db.todolist.id, db.task.listId),
   );
 
-  $TasksProcessedTableManager get tasksRefs {
-    final manager = $TasksTableManager(
+  $$TaskTableProcessedTableManager get taskRefs {
+    final manager = $$TaskTableTableManager(
       $_db,
-      $_db.tasks,
+      $_db.task,
     ).filter((f) => f.listId.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_tasksRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_taskRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
 }
 
-class $TodolistFilterComposer extends Composer<_$Database, Todolist> {
-  $TodolistFilterComposer({
+class $$TodolistTableFilterComposer
+    extends Composer<_$Database, $TodolistTable> {
+  $$TodolistTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -985,12 +867,12 @@ class $TodolistFilterComposer extends Composer<_$Database, Todolist> {
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<double> get createdAt => $composableBuilder(
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<double> get updatedAt => $composableBuilder(
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
@@ -1000,22 +882,22 @@ class $TodolistFilterComposer extends Composer<_$Database, Todolist> {
     builder: (column) => ColumnFilters(column),
   );
 
-  Expression<bool> tasksRefs(
-    Expression<bool> Function($TasksFilterComposer f) f,
+  Expression<bool> taskRefs(
+    Expression<bool> Function($$TaskTableFilterComposer f) f,
   ) {
-    final $TasksFilterComposer composer = $composerBuilder(
+    final $$TaskTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.tasks,
+      referencedTable: $db.task,
       getReferencedColumn: (t) => t.listId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $TasksFilterComposer(
+          }) => $$TaskTableFilterComposer(
             $db: $db,
-            $table: $db.tasks,
+            $table: $db.task,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -1026,8 +908,9 @@ class $TodolistFilterComposer extends Composer<_$Database, Todolist> {
   }
 }
 
-class $TodolistOrderingComposer extends Composer<_$Database, Todolist> {
-  $TodolistOrderingComposer({
+class $$TodolistTableOrderingComposer
+    extends Composer<_$Database, $TodolistTable> {
+  $$TodolistTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1044,12 +927,12 @@ class $TodolistOrderingComposer extends Composer<_$Database, Todolist> {
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<double> get createdAt => $composableBuilder(
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<double> get updatedAt => $composableBuilder(
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
   );
@@ -1060,8 +943,9 @@ class $TodolistOrderingComposer extends Composer<_$Database, Todolist> {
   );
 }
 
-class $TodolistAnnotationComposer extends Composer<_$Database, Todolist> {
-  $TodolistAnnotationComposer({
+class $$TodolistTableAnnotationComposer
+    extends Composer<_$Database, $TodolistTable> {
+  $$TodolistTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1074,31 +958,31 @@ class $TodolistAnnotationComposer extends Composer<_$Database, Todolist> {
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<double> get createdAt =>
+  GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
-  GeneratedColumn<double> get updatedAt =>
+  GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
   GeneratedColumn<bool> get deleted =>
       $composableBuilder(column: $table.deleted, builder: (column) => column);
 
-  Expression<T> tasksRefs<T extends Object>(
-    Expression<T> Function($TasksAnnotationComposer a) f,
+  Expression<T> taskRefs<T extends Object>(
+    Expression<T> Function($$TaskTableAnnotationComposer a) f,
   ) {
-    final $TasksAnnotationComposer composer = $composerBuilder(
+    final $$TaskTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.tasks,
+      referencedTable: $db.task,
       getReferencedColumn: (t) => t.listId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $TasksAnnotationComposer(
+          }) => $$TaskTableAnnotationComposer(
             $db: $db,
-            $table: $db.tasks,
+            $table: $db.task,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -1109,38 +993,38 @@ class $TodolistAnnotationComposer extends Composer<_$Database, Todolist> {
   }
 }
 
-class $TodolistTableManager
+class $$TodolistTableTableManager
     extends
         RootTableManager<
           _$Database,
-          Todolist,
+          $TodolistTable,
           TodolistData,
-          $TodolistFilterComposer,
-          $TodolistOrderingComposer,
-          $TodolistAnnotationComposer,
-          $TodolistCreateCompanionBuilder,
-          $TodolistUpdateCompanionBuilder,
-          (TodolistData, $TodolistReferences),
+          $$TodolistTableFilterComposer,
+          $$TodolistTableOrderingComposer,
+          $$TodolistTableAnnotationComposer,
+          $$TodolistTableCreateCompanionBuilder,
+          $$TodolistTableUpdateCompanionBuilder,
+          (TodolistData, $$TodolistTableReferences),
           TodolistData,
-          PrefetchHooks Function({bool tasksRefs})
+          PrefetchHooks Function({bool taskRefs})
         > {
-  $TodolistTableManager(_$Database db, Todolist table)
+  $$TodolistTableTableManager(_$Database db, $TodolistTable table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $TodolistFilterComposer($db: db, $table: table),
+              $$TodolistTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $TodolistOrderingComposer($db: db, $table: table),
+              $$TodolistTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $TodolistAnnotationComposer($db: db, $table: table),
+              $$TodolistTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<double> createdAt = const Value.absent(),
-                Value<double> updatedAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
                 Value<bool> deleted = const Value.absent(),
               }) => TodolistCompanion(
                 id: id,
@@ -1153,8 +1037,8 @@ class $TodolistTableManager
               ({
                 Value<int> id = const Value.absent(),
                 required String name,
-                Value<double> createdAt = const Value.absent(),
-                Value<double> updatedAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
                 Value<bool> deleted = const Value.absent(),
               }) => TodolistCompanion.insert(
                 id: id,
@@ -1165,22 +1049,31 @@ class $TodolistTableManager
               ),
           withReferenceMapper: (p0) => p0
               .map(
-                (e) => (e.readTable(table), $TodolistReferences(db, table, e)),
+                (e) => (
+                  e.readTable(table),
+                  $$TodolistTableReferences(db, table, e),
+                ),
               )
               .toList(),
-          prefetchHooksCallback: ({tasksRefs = false}) {
+          prefetchHooksCallback: ({taskRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (tasksRefs) db.tasks],
+              explicitlyWatchedTables: [if (taskRefs) db.task],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (tasksRefs)
-                    await $_getPrefetchedData<TodolistData, Todolist, Task>(
+                  if (taskRefs)
+                    await $_getPrefetchedData<
+                      TodolistData,
+                      $TodolistTable,
+                      TaskData
+                    >(
                       currentTable: table,
-                      referencedTable: $TodolistReferences._tasksRefsTable(db),
+                      referencedTable: $$TodolistTableReferences._taskRefsTable(
+                        db,
+                      ),
                       managerFromTypedResult: (p0) =>
-                          $TodolistReferences(db, table, p0).tasksRefs,
+                          $$TodolistTableReferences(db, table, p0).taskRefs,
                       referencedItemsForCurrentItem: (item, referencedItems) =>
                           referencedItems.where((e) => e.listId == item.id),
                       typedResults: items,
@@ -1193,52 +1086,53 @@ class $TodolistTableManager
       );
 }
 
-typedef $TodolistProcessedTableManager =
+typedef $$TodolistTableProcessedTableManager =
     ProcessedTableManager<
       _$Database,
-      Todolist,
+      $TodolistTable,
       TodolistData,
-      $TodolistFilterComposer,
-      $TodolistOrderingComposer,
-      $TodolistAnnotationComposer,
-      $TodolistCreateCompanionBuilder,
-      $TodolistUpdateCompanionBuilder,
-      (TodolistData, $TodolistReferences),
+      $$TodolistTableFilterComposer,
+      $$TodolistTableOrderingComposer,
+      $$TodolistTableAnnotationComposer,
+      $$TodolistTableCreateCompanionBuilder,
+      $$TodolistTableUpdateCompanionBuilder,
+      (TodolistData, $$TodolistTableReferences),
       TodolistData,
-      PrefetchHooks Function({bool tasksRefs})
+      PrefetchHooks Function({bool taskRefs})
     >;
-typedef $TasksCreateCompanionBuilder =
-    TasksCompanion Function({
+typedef $$TaskTableCreateCompanionBuilder =
+    TaskCompanion Function({
       Value<int> id,
       required String task,
-      Value<bool> done,
       required int listId,
-      Value<double> createdAt,
-      Value<double> updatedAt,
+      Value<bool> done,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
       Value<bool> deleted,
     });
-typedef $TasksUpdateCompanionBuilder =
-    TasksCompanion Function({
+typedef $$TaskTableUpdateCompanionBuilder =
+    TaskCompanion Function({
       Value<int> id,
       Value<String> task,
-      Value<bool> done,
       Value<int> listId,
-      Value<double> createdAt,
-      Value<double> updatedAt,
+      Value<bool> done,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
       Value<bool> deleted,
     });
 
-final class $TasksReferences extends BaseReferences<_$Database, Tasks, Task> {
-  $TasksReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$TaskTableReferences
+    extends BaseReferences<_$Database, $TaskTable, TaskData> {
+  $$TaskTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static Todolist _listIdTable(_$Database db) => db.todolist.createAlias(
-    $_aliasNameGenerator(db.tasks.listId, db.todolist.id),
+  static $TodolistTable _listIdTable(_$Database db) => db.todolist.createAlias(
+    $_aliasNameGenerator(db.task.listId, db.todolist.id),
   );
 
-  $TodolistProcessedTableManager get listId {
+  $$TodolistTableProcessedTableManager get listId {
     final $_column = $_itemColumn<int>('list_id')!;
 
-    final manager = $TodolistTableManager(
+    final manager = $$TodolistTableTableManager(
       $_db,
       $_db.todolist,
     ).filter((f) => f.id.sqlEquals($_column));
@@ -1250,8 +1144,8 @@ final class $TasksReferences extends BaseReferences<_$Database, Tasks, Task> {
   }
 }
 
-class $TasksFilterComposer extends Composer<_$Database, Tasks> {
-  $TasksFilterComposer({
+class $$TaskTableFilterComposer extends Composer<_$Database, $TaskTable> {
+  $$TaskTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1273,12 +1167,12 @@ class $TasksFilterComposer extends Composer<_$Database, Tasks> {
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<double> get createdAt => $composableBuilder(
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<double> get updatedAt => $composableBuilder(
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
@@ -1288,8 +1182,8 @@ class $TasksFilterComposer extends Composer<_$Database, Tasks> {
     builder: (column) => ColumnFilters(column),
   );
 
-  $TodolistFilterComposer get listId {
-    final $TodolistFilterComposer composer = $composerBuilder(
+  $$TodolistTableFilterComposer get listId {
+    final $$TodolistTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.listId,
       referencedTable: $db.todolist,
@@ -1299,7 +1193,7 @@ class $TasksFilterComposer extends Composer<_$Database, Tasks> {
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $TodolistFilterComposer(
+          }) => $$TodolistTableFilterComposer(
             $db: $db,
             $table: $db.todolist,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
@@ -1312,8 +1206,8 @@ class $TasksFilterComposer extends Composer<_$Database, Tasks> {
   }
 }
 
-class $TasksOrderingComposer extends Composer<_$Database, Tasks> {
-  $TasksOrderingComposer({
+class $$TaskTableOrderingComposer extends Composer<_$Database, $TaskTable> {
+  $$TaskTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1335,12 +1229,12 @@ class $TasksOrderingComposer extends Composer<_$Database, Tasks> {
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<double> get createdAt => $composableBuilder(
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<double> get updatedAt => $composableBuilder(
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
   );
@@ -1350,8 +1244,8 @@ class $TasksOrderingComposer extends Composer<_$Database, Tasks> {
     builder: (column) => ColumnOrderings(column),
   );
 
-  $TodolistOrderingComposer get listId {
-    final $TodolistOrderingComposer composer = $composerBuilder(
+  $$TodolistTableOrderingComposer get listId {
+    final $$TodolistTableOrderingComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.listId,
       referencedTable: $db.todolist,
@@ -1361,7 +1255,7 @@ class $TasksOrderingComposer extends Composer<_$Database, Tasks> {
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $TodolistOrderingComposer(
+          }) => $$TodolistTableOrderingComposer(
             $db: $db,
             $table: $db.todolist,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
@@ -1374,8 +1268,8 @@ class $TasksOrderingComposer extends Composer<_$Database, Tasks> {
   }
 }
 
-class $TasksAnnotationComposer extends Composer<_$Database, Tasks> {
-  $TasksAnnotationComposer({
+class $$TaskTableAnnotationComposer extends Composer<_$Database, $TaskTable> {
+  $$TaskTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1391,17 +1285,17 @@ class $TasksAnnotationComposer extends Composer<_$Database, Tasks> {
   GeneratedColumn<bool> get done =>
       $composableBuilder(column: $table.done, builder: (column) => column);
 
-  GeneratedColumn<double> get createdAt =>
+  GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
-  GeneratedColumn<double> get updatedAt =>
+  GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
   GeneratedColumn<bool> get deleted =>
       $composableBuilder(column: $table.deleted, builder: (column) => column);
 
-  $TodolistAnnotationComposer get listId {
-    final $TodolistAnnotationComposer composer = $composerBuilder(
+  $$TodolistTableAnnotationComposer get listId {
+    final $$TodolistTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.listId,
       referencedTable: $db.todolist,
@@ -1411,7 +1305,7 @@ class $TasksAnnotationComposer extends Composer<_$Database, Tasks> {
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $TodolistAnnotationComposer(
+          }) => $$TodolistTableAnnotationComposer(
             $db: $db,
             $table: $db.todolist,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
@@ -1424,46 +1318,46 @@ class $TasksAnnotationComposer extends Composer<_$Database, Tasks> {
   }
 }
 
-class $TasksTableManager
+class $$TaskTableTableManager
     extends
         RootTableManager<
           _$Database,
-          Tasks,
-          Task,
-          $TasksFilterComposer,
-          $TasksOrderingComposer,
-          $TasksAnnotationComposer,
-          $TasksCreateCompanionBuilder,
-          $TasksUpdateCompanionBuilder,
-          (Task, $TasksReferences),
-          Task,
+          $TaskTable,
+          TaskData,
+          $$TaskTableFilterComposer,
+          $$TaskTableOrderingComposer,
+          $$TaskTableAnnotationComposer,
+          $$TaskTableCreateCompanionBuilder,
+          $$TaskTableUpdateCompanionBuilder,
+          (TaskData, $$TaskTableReferences),
+          TaskData,
           PrefetchHooks Function({bool listId})
         > {
-  $TasksTableManager(_$Database db, Tasks table)
+  $$TaskTableTableManager(_$Database db, $TaskTable table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $TasksFilterComposer($db: db, $table: table),
+              $$TaskTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $TasksOrderingComposer($db: db, $table: table),
+              $$TaskTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $TasksAnnotationComposer($db: db, $table: table),
+              $$TaskTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> task = const Value.absent(),
-                Value<bool> done = const Value.absent(),
                 Value<int> listId = const Value.absent(),
-                Value<double> createdAt = const Value.absent(),
-                Value<double> updatedAt = const Value.absent(),
+                Value<bool> done = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
                 Value<bool> deleted = const Value.absent(),
-              }) => TasksCompanion(
+              }) => TaskCompanion(
                 id: id,
                 task: task,
-                done: done,
                 listId: listId,
+                done: done,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deleted: deleted,
@@ -1472,22 +1366,25 @@ class $TasksTableManager
               ({
                 Value<int> id = const Value.absent(),
                 required String task,
-                Value<bool> done = const Value.absent(),
                 required int listId,
-                Value<double> createdAt = const Value.absent(),
-                Value<double> updatedAt = const Value.absent(),
+                Value<bool> done = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
                 Value<bool> deleted = const Value.absent(),
-              }) => TasksCompanion.insert(
+              }) => TaskCompanion.insert(
                 id: id,
                 task: task,
-                done: done,
                 listId: listId,
+                done: done,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deleted: deleted,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), $TasksReferences(db, table, e)))
+              .map(
+                (e) =>
+                    (e.readTable(table), $$TaskTableReferences(db, table, e)),
+              )
               .toList(),
           prefetchHooksCallback: ({listId = false}) {
             return PrefetchHooks(
@@ -1514,10 +1411,9 @@ class $TasksTableManager
                           state.withJoin(
                                 currentTable: table,
                                 currentColumn: table.listId,
-                                referencedTable: $TasksReferences._listIdTable(
-                                  db,
-                                ),
-                                referencedColumn: $TasksReferences
+                                referencedTable: $$TaskTableReferences
+                                    ._listIdTable(db),
+                                referencedColumn: $$TaskTableReferences
                                     ._listIdTable(db)
                                     .id,
                               )
@@ -1535,25 +1431,25 @@ class $TasksTableManager
       );
 }
 
-typedef $TasksProcessedTableManager =
+typedef $$TaskTableProcessedTableManager =
     ProcessedTableManager<
       _$Database,
-      Tasks,
-      Task,
-      $TasksFilterComposer,
-      $TasksOrderingComposer,
-      $TasksAnnotationComposer,
-      $TasksCreateCompanionBuilder,
-      $TasksUpdateCompanionBuilder,
-      (Task, $TasksReferences),
-      Task,
+      $TaskTable,
+      TaskData,
+      $$TaskTableFilterComposer,
+      $$TaskTableOrderingComposer,
+      $$TaskTableAnnotationComposer,
+      $$TaskTableCreateCompanionBuilder,
+      $$TaskTableUpdateCompanionBuilder,
+      (TaskData, $$TaskTableReferences),
+      TaskData,
       PrefetchHooks Function({bool listId})
     >;
 
 class $DatabaseManager {
   final _$Database _db;
   $DatabaseManager(this._db);
-  $TodolistTableManager get todolist =>
-      $TodolistTableManager(_db, _db.todolist);
-  $TasksTableManager get tasks => $TasksTableManager(_db, _db.tasks);
+  $$TodolistTableTableManager get todolist =>
+      $$TodolistTableTableManager(_db, _db.todolist);
+  $$TaskTableTableManager get task => $$TaskTableTableManager(_db, _db.task);
 }

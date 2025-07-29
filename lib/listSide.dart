@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
 import 'package:test_windows_projekt/taskSide.dart';
 
+
 class listSide extends StatefulWidget {
 
   final Database database;
+
 
   listSide({super.key, required this.database});
 
@@ -39,14 +41,10 @@ class _listSideState extends State<listSide> {
               child: Container(
                 width: MediaQuery.sizeOf(context).width,
                 child: StreamBuilder(
-                  stream: widget.database.getAllLists().watch(),
+                  stream: widget.database.todolistDao.getAllLists(),
                   builder: (context, snapshot){
-                    if(!snapshot.hasData) {
-                      print("Fehler oder keine vorhandenen Daten bei der Anfrage");
-                      return Text("Keine Daten vorhanden");
-                    } else if (snapshot.hasData) {
+                    if (snapshot.hasData) {
                       List fetchedLists = snapshot.data! as List<dynamic>; //Das ist die Liste der Tasks
-                      print(fetchedLists);
 
                       return ListView.separated(
 
@@ -122,7 +120,7 @@ class _listSideState extends State<listSide> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                                 print(textEditingController.text);
-                                widget.database.createList(textEditingController.text);
+                                widget.database.todolistDao.createList(textEditingController.text);
                                 textEditingController.clear();
                               }, child: Text("Bestätigen")
                           ),
