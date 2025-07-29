@@ -132,14 +132,18 @@ class _listSideState extends State<listSide> {
               },
               child: Container(
                 child: Icon(Icons.add, color: Colors.white, size: 30,),
-
               ),
             ),
           ),
-
-
-
-
+          StreamBuilder(stream: widget.database.taskDao.getAllSoftDeletedTasks(), builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              List fetchedTasks = snapshot.data! as List<dynamic>; //Das ist die Liste der Tasks
+              return Text("Soft-Deleted Tasks: " + fetchedTasks.length.toString());
+            } else {
+              return Text("Unbekannter Fehler aufgetreten!");
+            }
+          }),
+          Spacer(),
         ],
       ),
     );

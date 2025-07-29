@@ -87,4 +87,10 @@ class TaskDao extends DatabaseAccessor<Database> with _$TaskDaoMixin {
         ..orderBy([(t) => OrderingTerm(expression: t.done, mode: OrderingMode.asc)]))
         .watch();
   }
+
+  //GetAllSoftDeletedTasks
+  Stream<List<TaskData>> getAllSoftDeletedTasks() {
+    return (select(task)
+        ..where((t) => t.deleted.equals(true))).watch();
+  }
 }
