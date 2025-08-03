@@ -32,11 +32,6 @@ class _listSideState extends State<listSide> {
             centerTitle: false,
           ),
 
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Meine Listen"),
-          ),
-
           Expanded(
               child: Container(
                 width: MediaQuery.sizeOf(context).width,
