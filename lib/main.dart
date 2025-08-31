@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/listSide.dart';
+import 'package:test_windows_projekt/login_screen.dart';
 import 'database.dart';
 
 void main() async {
@@ -23,7 +24,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: listSide(database: database),
+      //home: listSide(database: database),
+      home: LoginScreen(),
     );
   }
 }
