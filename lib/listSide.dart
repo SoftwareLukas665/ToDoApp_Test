@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
 import 'package:test_windows_projekt/taskSide.dart';
+import 'login_screen.dart';
 
 
 class listSide extends StatefulWidget {
 
   final Database database;
-
-
   listSide({super.key, required this.database});
 
   @override
   State<listSide> createState() => _listSideState();
 }
+
 TextEditingController textEditingController = TextEditingController();
 
 class _listSideState extends State<listSide> {
@@ -30,6 +30,15 @@ class _listSideState extends State<listSide> {
               ),
             ),
             centerTitle: false,
+            actions: [
+              IconButton(onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()
+                    )
+                );
+              }, icon: Icon(Icons.person_outlined))
+            ],
           ),
 
           Expanded(

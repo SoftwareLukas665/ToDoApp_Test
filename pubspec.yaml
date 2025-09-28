@@ -38,6 +38,8 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.37 # Add or ensure this is present for native database support
   path_provider: ^2.1.5
   path: ^1.9.0
+  flutter_signin_button: ^2.1.1
+  flutter_svg: ^2.0.6
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +64,8 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/images/24px.svg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

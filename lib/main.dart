@@ -24,8 +24,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      //home: listSide(database: database),
-      home: LoginScreen(),
+      home: listSide(database: database),
+      //home: LoginScreen(),
     );
   }
 }
