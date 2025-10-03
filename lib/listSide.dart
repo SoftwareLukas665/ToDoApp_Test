@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
 import 'package:test_windows_projekt/taskSide.dart';
-import 'login_screen.dart';
 
 
 class listSide extends StatefulWidget {
@@ -30,7 +29,7 @@ class _listSideState extends State<listSide> {
               ),
             ),
             centerTitle: false,
-            actions: [
+            /*actions: [
               IconButton(onPressed: () {
                 Navigator.push(
                     context,
@@ -38,7 +37,7 @@ class _listSideState extends State<listSide> {
                     )
                 );
               }, icon: Icon(Icons.person_outlined))
-            ],
+            ],*/
           ),
 
           Expanded(
