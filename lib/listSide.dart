@@ -22,7 +22,7 @@ class _listSideState extends State<listSide> {
         children: [
           AppBar(
             forceMaterialTransparency: true, //Verhindert Farbänderung der AppBar beim scrollen
-            title: Text("To-Do",
+            title: Text("UniList",
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.w700
