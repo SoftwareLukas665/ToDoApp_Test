@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:test_windows_projekt/colorPalette_test.dart';
 import 'package:test_windows_projekt/listSide.dart';
+import 'design_system/variables/app_colors.dart';
 import 'database.dart';
 
 void main() async {
@@ -18,13 +20,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       debugShowCheckedModeBanner: true,
       title: 'Flutter Demo',
-      theme: ThemeData(
+      theme: new ThemeData(scaffoldBackgroundColor: Color(AppColors.backgroundLightValue)),
+      /*theme: ThemeData(
         //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      ),*/
       home: listSide(database: database),
-      //home: LoginScreen(),
+      //home: colorTest(),
     );
   }
 }

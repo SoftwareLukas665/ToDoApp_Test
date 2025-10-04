@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
 import 'package:test_windows_projekt/taskSide.dart';
+import 'design_system/variables/app_colors.dart';
 
 
 class listSide extends StatefulWidget {
@@ -62,13 +63,13 @@ class _listSideState extends State<listSide> {
                           final list = fetchedLists[index];
                           return Material( //Material verhindert, dass die Liste unter anderen UI Elementen sichtbar bleibt
                             child: ListTile(
-                              tileColor: Colors.grey[350],
+                              tileColor: AppColors.accentLight, //Colors.grey[350],
                               contentPadding: EdgeInsets.all(10),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               title: Text(list.name),
-                              leading: Text(list.id.toString()),
+                              //leading: Text(list.id.toString()),
                               trailing: Icon(Icons.chevron_right),
                               onTap: () {
                                 Navigator.push(
