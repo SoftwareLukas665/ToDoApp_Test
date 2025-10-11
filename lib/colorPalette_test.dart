@@ -11,8 +11,6 @@ class colorTest extends StatefulWidget {
 class _colorTestState extends State<colorTest> {
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.sizeOf(context).width;
-    double screenHeight = MediaQuery.sizeOf(context).height;
 
     return Scaffold(
       appBar: AppBar(

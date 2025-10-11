@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
+import 'app_spacing.dart';
 
 class AppTextStyles {
   static const String fontFamily = ""; //Eigene Schriftart

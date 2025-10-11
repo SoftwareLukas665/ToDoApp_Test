@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
 
-
-
 class taskSide extends StatefulWidget {
   final Database database;
   final int list_id;
@@ -17,12 +15,12 @@ class taskSide extends StatefulWidget {
 class _taskSideState extends State<taskSide> {
   @override
 
-  String item = "";
 
   Widget build(BuildContext context) {
 
     TextEditingController textEditingController = TextEditingController();
-    TextEditingController EditTaskController = TextEditingController();
+    TextEditingController editTaskController = TextEditingController();
+    String item = "";
 
 
     //Überprüfung nach Filtereinstellungen des Nutzers
@@ -168,7 +166,7 @@ class _taskSideState extends State<taskSide> {
                                     context: context,
                                     builder:  (BuildContext context) {
 
-                                      EditTaskController.text = task.task;
+                                      editTaskController.text = task.task;
 
                                       return AlertDialog(
                                         content: Column(
@@ -180,16 +178,16 @@ class _taskSideState extends State<taskSide> {
                                             InputDecoration(
                                               hintText: task.task,
                                             ),
-                                              controller: EditTaskController,
+                                              controller: editTaskController,
                                             ),
 
                                             ElevatedButton(style: ElevatedButton.styleFrom(
                                                 backgroundColor: Colors.black,
                                                 foregroundColor: Colors.white),
                                                 onPressed: () {
-                                                  widget.database.taskDao.changeTask(task.id, EditTaskController.text);
+                                                  widget.database.taskDao.changeTask(task.id, editTaskController.text);
                                                   Navigator.of(context).pop();
-                                                  EditTaskController.clear();
+                                                  editTaskController.clear();
                                                 }, child: Text("Änderungen bestätigen")
                                             ),
                                           ],
