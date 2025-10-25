@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/material.dart';
 
 class AppSpacing {
   double screenWidth = PlatformDispatcher.instance.views.first.physicalSize.width /
@@ -9,4 +10,5 @@ class AppSpacing {
 
   double outerSpacingRight = 0.0;
   double outerSpacingLeft = 0.0;
+
 }
