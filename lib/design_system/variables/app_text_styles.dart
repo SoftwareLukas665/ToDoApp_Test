@@ -10,7 +10,7 @@ class AppTextStyles {
     fontFamily: fontFamily,
     fontSize: 35.0,
     fontWeight: FontWeight.bold,
-    color: AppColors.text,
+    color: AppColors.textPrimary,
   );
 
   //headline 1
@@ -18,7 +18,7 @@ class AppTextStyles {
     fontFamily: fontFamily,
     fontSize: 25.0,
     fontWeight: FontWeight.bold,
-    color: AppColors.text,
+    color: AppColors.textPrimary,
   );
 
   //headline 2
@@ -26,7 +26,7 @@ class AppTextStyles {
     fontFamily: fontFamily,
     fontSize: 20.0,
     fontWeight: FontWeight.normal,
-    color: AppColors.text,
+    color: AppColors.textPrimary,
   );
 
   //normal text
@@ -34,6 +34,6 @@ class AppTextStyles {
     fontFamily: fontFamily,
     fontSize: 14.0,
     fontWeight: FontWeight.normal,
-    color: AppColors.text,
+    color: AppColors.textPrimary,
   );
 }

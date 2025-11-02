@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
+import 'package:test_windows_projekt/design_system/button/custom_MainButton.dart';
 
 class taskSide extends StatefulWidget {
   final Database database;
@@ -84,13 +85,21 @@ class _taskSideState extends State<taskSide> {
 
                     Spacer(),
 
-                    ElevatedButton(style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white),
-                        onPressed: () {
-                          widget.database.taskDao.createTask(textEditingController.text, widget.list_id);
-                          textEditingController.clear();
-                        }, child: Text("Bestätigen")
+                    // ElevatedButton(style: ElevatedButton.styleFrom(
+                    //     backgroundColor: Colors.black,
+                    //     foregroundColor: Colors.white),
+                    //     onPressed: () {
+                    //       widget.database.taskDao.createTask(textEditingController.text, widget.list_id);
+                    //       textEditingController.clear();
+                    //     }, child: Text("Bestätigen")
+                    // ),
+
+                    MainButton(
+                      text: "Bestätigen",
+                      onPressed: (){
+                        widget.database.taskDao.createTask(textEditingController.text, widget.list_id);
+                        textEditingController.clear();
+                      },
                     ),
 
                     Spacer(flex: 1),

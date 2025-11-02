@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
-import 'package:test_windows_projekt/listSide_files/createList_dialog.dart';
+import 'package:test_windows_projekt/UI_files/popUpDialog/createList_dialog.dart';
 import 'package:test_windows_projekt/taskSide.dart';
-import '../design_system/variables/app_colors.dart';
-import '../design_system/button/custom_RightDownButton.dart';
+import 'design_system/variables/app_colors.dart';
+import 'design_system/button/custom_RightDownButton.dart';
 
 
 class ListSide extends StatefulWidget {
@@ -22,7 +22,7 @@ class _ListSideState extends State<ListSide> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: Button(
-          icon: Icon(Icons.add, size: 70, color: AppColors.text),
+          icon: Icon(Icons.add, size: 70, color: AppColors.textPrimary),
           onPressed: () {
             showDialog(
                 context: context,
@@ -67,13 +67,13 @@ class _ListSideState extends State<ListSide> {
                           final list = fetchedLists[index];
                           return Material( //Material verhindert, dass die Liste unter anderen UI Elementen sichtbar bleibt
                             child: ListTile(
-                              tileColor: AppColors.accentLight, //Colors.grey[350],
+                              tileColor: AppColors.elementBackgroundLight, //Colors.grey[350],
                               contentPadding: const EdgeInsets.all(10),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               title: Text(list.name),
-                              trailing: const Icon(Icons.chevron_right),
+                              trailing: Icon(Icons.chevron_right),
                               onTap: () {
                                 Navigator.push(
                                     context,

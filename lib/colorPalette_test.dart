@@ -37,7 +37,7 @@ class _colorTestState extends State<colorTest> {
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.text,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                 );
@@ -56,7 +56,7 @@ class _colorTestState extends State<colorTest> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.accentDark, // deine Farbe
-                  foregroundColor: AppColors.text, // Textfarbe
+                  foregroundColor: AppColors.textPrimary, // Textfarbe
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12), // abgerundete Ecken

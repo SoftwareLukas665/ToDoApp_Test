@@ -21,11 +21,12 @@ class MainButton extends StatelessWidget {
       child: Text(text ?? ''),
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.accentDark,
-        foregroundColor: AppColors.text,
+        backgroundColor: AppColors.elementBackgroundMiddle,
+        foregroundColor: AppColors.textPrimary,
         shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(100),
         ),
+        elevation: 0,
       ),
     );
   }

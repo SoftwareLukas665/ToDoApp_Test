@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/colorPalette_test.dart';
-import 'package:test_windows_projekt/listSide_files/listSide.dart';
+import 'package:test_windows_projekt/listSide.dart';
 import 'design_system/variables/app_colors.dart';
 import 'database.dart';
 
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
 
       debugShowCheckedModeBanner: true,
       title: 'Flutter Demo',
-      theme: new ThemeData(scaffoldBackgroundColor: Color(AppColors.backgroundLightValue)),
+      theme: new ThemeData(scaffoldBackgroundColor: Color(AppColors.backgroundValue)),
       /*theme: ThemeData(
         //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),*/
