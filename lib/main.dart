@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:test_windows_projekt/colorPalette_test.dart';
 import 'package:test_windows_projekt/listSide.dart';
 import 'design_system/variables/app_colors.dart';
 import 'database.dart';

@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
 import 'package:test_windows_projekt/design_system/button/custom_MainButton.dart';
 
-class CreateListDialog extends StatelessWidget {
+class CreateTaskDialog extends StatelessWidget {
   final TextEditingController textEditingController;
   final Database database;
+  final int list_id;
 
-  const CreateListDialog({
+  const CreateTaskDialog({
     super.key,
     required this.textEditingController,
     required this.database,
+    required this.list_id,
   });
 
   @override
@@ -30,8 +32,8 @@ class CreateListDialog extends StatelessWidget {
             text: "Bestätigen",
             onPressed: () {
               Navigator.of(context).pop();
-              print(textEditingController.text);
-              database.todolistDao.createList(textEditingController.text);
+              print("Aufgabe: ${textEditingController.text} wird hinzugefügt");
+              database.taskDao.createTask(textEditingController.text, list_id);
               textEditingController.clear();
             },
           ),

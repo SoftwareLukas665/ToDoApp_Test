@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
 import 'package:test_windows_projekt/design_system/button/custom_MainButton.dart';
+import 'package:test_windows_projekt/design_system/variables/app_colors.dart';
 
 class CreateListDialog extends StatelessWidget {
   final TextEditingController textEditingController;
@@ -15,6 +16,7 @@ class CreateListDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: AppColors.appBackground,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

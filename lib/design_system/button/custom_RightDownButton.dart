@@ -18,13 +18,13 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.accentDark,
+      color: AppColors.elementBackgroundDark,
         borderRadius: BorderRadius.circular(20),
         elevation: 10.0,
         child: InkWell(
           onTap: onPressed,
           borderRadius: BorderRadius.circular(20),
-          splashColor: AppColors.accentLight,
+          splashColor: AppColors.elementBackgroundDark,
           child: SizedBox(
             width: 80,
             height: 80,

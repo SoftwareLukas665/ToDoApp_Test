@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
 import 'package:test_windows_projekt/design_system/button/custom_MainButton.dart';
+import 'design_system/button/custom_RightDownButton.dart';
+import 'UI_files/popUpDialog/createTask_dialog.dart';
+import 'design_system/variables/app_colors.dart';
 
 class taskSide extends StatefulWidget {
   final Database database;
@@ -12,39 +15,34 @@ class taskSide extends StatefulWidget {
   State<taskSide> createState() => _taskSideState();
 }
 
-
 class _taskSideState extends State<taskSide> {
   @override
-
-
   Widget build(BuildContext context) {
-
     TextEditingController textEditingController = TextEditingController();
     TextEditingController editTaskController = TextEditingController();
     String item = "";
 
-
     //Überprüfung nach Filtereinstellungen des Nutzers
-    Stream<Object?>? checkSortAndFilterOption (String? itemSelected) {
+    Stream<Object?>? checkSortAndFilterOption(String? itemSelected) {
       if (itemSelected == "Unerledigt") {
-        print("Unerledigt");
+        print("Methode sagt: Unerledigt");
         return widget.database.taskDao.getOnlyDoneFalse(widget.list_id);
       } else if (itemSelected == "Erledigt") {
-        print("Erledigt");
+        print("Methode sagt: Erledigt");
         return widget.database.taskDao.getOnlyDoneTrue(widget.list_id);
       } else if (itemSelected == "ErledigtZuerst") {
-        print("ErledigtZuerst");
+        print("Methode sagt: ErledigtZuerst");
         return widget.database.taskDao.getDoneTrueFirst(widget.list_id);
       } else if (itemSelected == "UnerledigtZuerst") {
-        print("UnerledigtZuerst");
+        print("Methode sagt: UnerledigtZuerst");
         return widget.database.taskDao.getDoneFalseFirst(widget.list_id);
       } else {
-        print("Alle Aufgaben");
+        print("Methode sagt: Alle Aufgaben");
         return widget.database.taskDao.getAllTasks(widget.list_id);
       }
     }
 
-    String getSelectedItem (){
+    String getSelectedItem() {
       return item;
     }
 
@@ -53,180 +51,229 @@ class _taskSideState extends State<taskSide> {
 
     //User-Interface
     return Scaffold(
+      floatingActionButton: Button(
+        icon: Icon(Icons.add, size: 70, color: AppColors.textPrimary),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return CreateTaskDialog(
+                textEditingController: textEditingController,
+                database: widget.database,
+                list_id: widget.list_id,
+              );
+            },
+          );
+        },
+      ),
       body: Column(
         children: [
           AppBar(
-            forceMaterialTransparency: true, //Verhindert Farbänderung der AppBar beim scrollen
-            title: Text("To-Do", style:
-              TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w700
-              ),
+            forceMaterialTransparency: true,
+            //Verhindert Farbänderung der AppBar beim scrollen
+            title: Text(
+              "To-Do",
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
             ),
+            actions: [
+              PopupMenuButton(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    shape: BoxShape.circle,
+                  ),
+                  padding: EdgeInsets.all(10),
+                  child: Icon(Icons.filter_alt, color: Colors.white),
+                ),
+                onSelected: (value) {
+                  setState(() {
+                    item = value;
+                    checkSortAndFilterOption(item);
+                  });
+                },
+                itemBuilder: (context) => <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(
+                    value: "Erledigt",
+                    child: Row(children: [Text("Nur erledigte")]),
+                  ),
+                  PopupMenuItem<String>(
+                    value: "Unerledigt",
+                    child: Row(children: [Text("Nur unerledigte")]),
+                  ),
+                  PopupMenuItem<String>(
+                    child: Row(
+                      children: [
+                        PopupMenuButton(
+                          onSelected: (value) {
+                            setState(() {
+                              item = value;
+                              checkSortAndFilterOption(item);
+                            });
+                          },
+                          child: Text("Sortieren nach"),
+                          itemBuilder: (context) =>
+                          <PopupMenuEntry<String>>[
+                            PopupMenuItem<String>(
+                              value: "ErledigtZuerst",
+                              child: Row(
+                                children: [
+                                  Text("Erledigte zuerst"),
+                                ],
+                              ),
+                            ),
+                            PopupMenuItem<String>(
+                              value: "UnerledigtZuerst",
+                              child: Row(
+                                children: [
+                                  Text("Unerledigte zuerst"),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
             centerTitle: false,
           ),
-          
-          Expanded(
-              child: Container(
-                width: screenWidth,
-                child: Column(
-                  children: [
-                    Spacer(flex: 2),
-
-                    Padding(
-                      padding: EdgeInsetsGeometry.symmetric(horizontal: screenWidth*0.04),
-                      child: TextField(decoration:
-                        InputDecoration(
-                            hintText: "Aufgabe eingeben",
-                        ),
-                        controller: textEditingController,
-                      ),
-                    ),
-
-                    Spacer(),
-
-                    // ElevatedButton(style: ElevatedButton.styleFrom(
-                    //     backgroundColor: Colors.black,
-                    //     foregroundColor: Colors.white),
-                    //     onPressed: () {
-                    //       widget.database.taskDao.createTask(textEditingController.text, widget.list_id);
-                    //       textEditingController.clear();
-                    //     }, child: Text("Bestätigen")
-                    // ),
-
-                    MainButton(
-                      text: "Bestätigen",
-                      onPressed: (){
-                        widget.database.taskDao.createTask(textEditingController.text, widget.list_id);
-                        textEditingController.clear();
-                      },
-                    ),
-
-                    Spacer(flex: 1),
-
-                  ],
-                )
-              )
-          ),
-
-          Divider(height: 3, thickness: 3, color: Colors.black,),
 
           Expanded(
             flex: 2,
             child: Container(
               width: screenWidth,
-              child: StreamBuilder(stream: checkSortAndFilterOption(getSelectedItem()) , builder: (context, snapshot) {
-                if(!snapshot.hasData) {
-                  return Text("Keine Daten vorhanden");
-                } else if (snapshot.hasData) {
-                  List fetchedTasks = snapshot.data! as List<dynamic>; //Das ist die Liste der Tasks
+              child: StreamBuilder(
+                stream: checkSortAndFilterOption(getSelectedItem()),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Text("Keine Daten vorhanden");
+                  } else if (snapshot.hasData) {
+                    List fetchedTasks =
+                        snapshot.data!
+                            as List<dynamic>; //Das ist die Liste der Tasks
 
-                  return Column(children: [
-                    PopupMenuButton(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          shape: BoxShape.circle,
-                        ),
-                        padding: EdgeInsets.all(10),
-                        child: Icon(Icons.filter_alt, color: Colors.white),
-                      ),
-                      onSelected: (value) {
-                        setState(() {
-                        item = value;
-                        checkSortAndFilterOption(item);
-                        
-                        });
-                      },
-                      itemBuilder: (context) => <PopupMenuEntry<String>>[
-                        PopupMenuItem<String>(value: "Erledigt", child: Row(children: [Text("Nur erledigte")],),),
-                        PopupMenuItem<String>(value: "Unerledigt", child: Row(children: [Text("Nur unerledigte")]),),
-                        PopupMenuItem<String>(child: Row(children: [
-                          PopupMenuButton(
-                            onSelected: (value) {
-                              setState(() {
-                                item = value;
-                                checkSortAndFilterOption(item);
-                              });
-                            },
-                            child: Text("Sortieren nach"),
-                            itemBuilder: (context) => <PopupMenuEntry<String>>[
-                              PopupMenuItem<String>(value: "ErledigtZuerst", child: Row(children: [Text("Erledigte zuerst")]),),
-                              PopupMenuItem<String>(value: "UnerledigtZuerst", child: Row(children: [Text("Unerledigte zuerst")]),),
-                            ],
-                          ),
-                        ],),),
-                      ],
-                    ),
+                    return Column(
+                      children: [
 
-                    Expanded(
-                        child: ListView.builder(
+
+                        Expanded(
+                          child: ListView.separated(
+                            separatorBuilder:
+                                (BuildContext context, int index) =>
+                                    const Padding(padding: EdgeInsets.all(5)),
+
+                            //Padding der einzelnen Listen-Elemente
+                            padding: const EdgeInsets.all(10),
+                            //Padding für die Liste als ganzes
                             shrinkWrap: true,
                             itemCount: fetchedTasks.length,
                             itemBuilder: (context, index) {
-                          final task = fetchedTasks[index];
-                          return ListTile(
-                            title: Text(task.task),
-                            trailing: Wrap(
-                              spacing: 5,
-                              children: [
-                                IconButton(onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder:  (BuildContext context) {
+                              final task = fetchedTasks[index];
+                              return Material(
+                                //Material verhindert, dass die Liste unter anderen UI Elementen sichtbar bleibt
+                                child: ListTile(
+                                  tileColor: AppColors.elementBackgroundLight,
+                                  //Colors.grey[350],
+                                  contentPadding: const EdgeInsets.all(10),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  title: Text(task.task),
+                                  trailing: Wrap(
+                                    spacing: 5,
+                                    children: [
+                                      IconButton(
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              editTaskController.text =
+                                                  task.task;
 
-                                      editTaskController.text = task.task;
+                                              return AlertDialog(
+                                                content: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Text("Aufgabe bearbeiten"),
 
-                                      return AlertDialog(
-                                        content: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text("Aufgabe bearbeiten"),
+                                                    TextField(
+                                                      decoration:
+                                                          InputDecoration(
+                                                            hintText: task.task,
+                                                          ),
+                                                      controller:
+                                                          editTaskController,
+                                                    ),
 
-                                            TextField(decoration:
-                                            InputDecoration(
-                                              hintText: task.task,
-                                            ),
-                                              controller: editTaskController,
-                                            ),
+                                                    ElevatedButton(
+                                                      style:
+                                                          ElevatedButton.styleFrom(
+                                                            backgroundColor:
+                                                                Colors.black,
+                                                            foregroundColor:
+                                                                Colors.white,
+                                                          ),
+                                                      onPressed: () {
+                                                        widget.database.taskDao
+                                                            .changeTask(
+                                                              task.id,
+                                                              editTaskController
+                                                                  .text,
+                                                            );
+                                                        Navigator.of(
+                                                          context,
+                                                        ).pop();
+                                                        editTaskController
+                                                            .clear();
+                                                      },
+                                                      child: Text(
+                                                        "Änderungen bestätigen",
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                        icon: Icon(Icons.edit),
+                                      ),
 
-                                            ElevatedButton(style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.black,
-                                                foregroundColor: Colors.white),
-                                                onPressed: () {
-                                                  widget.database.taskDao.changeTask(task.id, editTaskController.text);
-                                                  Navigator.of(context).pop();
-                                                  editTaskController.clear();
-                                                }, child: Text("Änderungen bestätigen")
-                                            ),
-                                          ],
-                                        ),
+                                      IconButton(
+                                        onPressed: () {
+                                          widget.database.taskDao
+                                              .softDeleteTask(task.id);
+                                        },
+                                        icon: Icon(Icons.delete),
+                                      ),
+                                    ],
+                                  ),
+                                  leading: Checkbox(
+                                    value: task.done,
+                                    onChanged: (value) {
+                                      widget.database.taskDao.updateTask(
+                                        task.id,
+                                        value!,
                                       );
                                     },
-                                  );
-                                }, icon: Icon(Icons.edit)),
-
-                                IconButton(onPressed: () {
-                                  widget.database.taskDao.softDeleteTask(task.id);
-                                }, icon: Icon(Icons.delete)),
-                              ],
-                            ),
-                            leading: Checkbox(value: task.done,
-                              onChanged: (value) {
-                                widget.database.taskDao.updateTask(task.id, value!);
-                              },
-                            ),
-                          );
-                        }),
-                    )
-
-
-                    ],
-                  );
-                } else {
-                  return Center(child: Text("Ein unbekannter Fehler ist aufgetreten!"),);
-                }
-              },),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Center(
+                      child: Text("Ein unbekannter Fehler ist aufgetreten!"),
+                    );
+                  }
+                },
+              ),
             ),
           ),
         ],
