@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
-import 'package:test_windows_projekt/design_system/button/custom_MainButton.dart';
 import 'design_system/button/custom_RightDownButton.dart';
-import 'UI_files/popUpDialog/createTask_dialog.dart';
+import 'design_system/popUpDialog/createTask_dialog.dart';
 import 'design_system/variables/app_colors.dart';
 
 class taskSide extends StatefulWidget {
   final Database database;
   final int list_id;
+  final String list_name;
 
-  taskSide({super.key, required this.database, required this.list_id});
+  const taskSide({super.key, required this.database, required this.list_id, required this.list_name});
 
   @override
   State<taskSide> createState() => _taskSideState();
@@ -72,7 +72,7 @@ class _taskSideState extends State<taskSide> {
             forceMaterialTransparency: true,
             //Verhindert Farbänderung der AppBar beim scrollen
             title: Text(
-              "To-Do",
+              widget.list_name,
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
             ),
             actions: [
@@ -142,7 +142,7 @@ class _taskSideState extends State<taskSide> {
 
           Expanded(
             flex: 2,
-            child: Container(
+            child: SizedBox(
               width: screenWidth,
               child: StreamBuilder(
                 stream: checkSortAndFilterOption(getSelectedItem()),

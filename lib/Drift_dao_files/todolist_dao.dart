@@ -22,4 +22,10 @@ class TodolistDao extends DatabaseAccessor<Database> with _$TodolistDaoMixin {
       ),
     );
   }
+
+  //Get List Name
+  Future<String> getListName(int id) async {
+    final list = await (select(todolist)..where((tbl) => tbl.id.equals(id))).getSingle();
+    return list.name;
+  }
 }

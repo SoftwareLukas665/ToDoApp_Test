@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_windows_projekt/database.dart';
-import 'package:test_windows_projekt/UI_files/popUpDialog/createList_dialog.dart';
+import 'package:test_windows_projekt/design_system/popUpDialog/createList_dialog.dart';
 import 'package:test_windows_projekt/taskSide.dart';
 import 'design_system/variables/app_colors.dart';
 import 'design_system/button/custom_RightDownButton.dart';
@@ -17,6 +17,19 @@ class ListSide extends StatefulWidget {
 
 class _ListSideState extends State<ListSide> {
   late final TextEditingController textEditingController;
+
+  @override
+  void initState() {
+    super.initState();
+    textEditingController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    // Dispose of the controller when the widget is removed
+    textEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +90,7 @@ class _ListSideState extends State<ListSide> {
                               onTap: () {
                                 Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => taskSide(database: widget.database, list_id: list.id)
+                                    MaterialPageRoute(builder: (context) => taskSide(database: widget.database, list_id: list.id, list_name: list.name,)
                                     )
                                 );
                               },
